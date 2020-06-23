@@ -1,3 +1,22 @@
 html {
     color: cornflowerblue;
 }
+
+body {
+    text-align: center;
+}
+.tab {
+    padding-left: 10px;
+}
+#chatbox-container {
+    display: inline-block;
+    width: 30%;
+    box-shadow: 0px 0px 20px grey;
+    margin-top: 50px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+}
+#message-list {
+    text-align: left;
+    list-style: none;
+}

@@ -8,12 +8,14 @@
 	<script src="core.js"></script>
 </head>
 <body ng-controller="mainController">
-	<ul>
-		<li ng-repeat="x in messages">{{x.index}}:    {{x.message}}</li>
-	</ul>
-	<div>
-		<input id="m" ng-model="message" autocomplete="off">
-		<button ng-click="send()">Send</button>
+	<div id="chatbox-container">
+		<ul id="message-list">
+			<li ng-repeat="x in messages">{{x.index}}: <span class="tab"></span> {{x.message}}</li>
+		</ul>
+		<div>
+			<input ng-model="message" autocomplete="off">
+			<button ng-click="send()">Send</button>
+		</div>
 	</div>
 </body>
 </html>
