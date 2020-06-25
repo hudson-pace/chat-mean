@@ -10,7 +10,7 @@
 <body ng-controller="mainController">
 	<div id="chatbox-container">
 		<ul id="message-list">
-			<li ng-repeat="x in messages" ng-style="x.style">{{x.index}}: <span class="tab"></span> {{x.message}}</li>
+			<li ng-repeat="x in messages">{{x.from}}: <span class="tab"></span> <span ng-style="x.style">{{x.text}}</span></li>
 		</ul>
 		<div>
 			<input ng-style="textStyle" ng-model="message" autocomplete="off">

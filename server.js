@@ -9,8 +9,11 @@ app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
 
+var totalConnections = 0;
 io.on('connection', function(socket) {
-	console.log('user connected.');
+	totalConnections++;
+	console.log('user connected (anon_' + totalConnections + ').');
+	io.emit('notice', 'anon_' + totalConnections);
 	socket.on('chat message', function(msg) {
 		io.emit('chat message', msg);
 	});
