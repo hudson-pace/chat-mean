@@ -11,6 +11,14 @@ chatApp.controller("mainController", function($scope, $timeout) {
         if ($scope.message[0] === '/') {
             command = $scope.message.split(' ');
             switch (command[0]) {
+                case '/list':
+                    if (command.length === 1) {
+                        socket.emit('list_users');
+                    }
+                    else {
+                        sendNotice('usage: /list');
+                    }
+                    break;
                 case '/setcolor':
                     if (command.length === 2)
                     {
@@ -41,8 +49,10 @@ chatApp.controller("mainController", function($scope, $timeout) {
                         sendNotice('usage: /setname [name]');
                     }
                     break;
+
+
                 case '/help':
-                    sendNotice('available commands: help, setcolor, setname')
+                    sendNotice('available commands: help, list, setcolor, setname')
                     break;
                 default:
                     sendNotice('unknown command. use /help for a list of commands.')
@@ -87,6 +97,14 @@ chatApp.controller("mainController", function($scope, $timeout) {
             $scope.userName = res.username;
             sendNotice('name set to ' + $scope.userName + '.');
         }
+    });
+
+    socket.on('list_users', function(res) {
+        userList = 'users: ';
+        for (let i = 0; i < res.length; i++) {
+            userList += res[i].username + ' ';
+        }
+        sendNotice(userList);
     });
 
     function sendNotice(msg) {

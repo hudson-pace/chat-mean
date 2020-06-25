@@ -13,7 +13,7 @@
 			<li ng-repeat="x in messages">{{x.from}}: <span class="tab"></span> <span ng-style="x.style">{{x.text}}</span></li>
 		</ul>
 		<div>
-			<input ng-style="textStyle" ng-model="message" autocomplete="off">
+			<input ng-style="textStyle" ng-model="message" autocomplete="off" ng-keydown="$event.keyCode === 13 && send()">
 			<button ng-click="send()">Send</button>
 		</div>
 	</div>

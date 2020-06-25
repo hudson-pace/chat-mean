@@ -46,6 +46,9 @@ io.on('connection', function(socket) {
 			username: name
 		});
 	});
+	socket.on('list_users', function() {
+		socket.emit('list_users', onlineUsers);
+	});
 });
 
 http.listen(3000, function() {
