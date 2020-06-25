@@ -1,6 +1,10 @@
 body {
     text-align: center;
 }
+ul {
+    height: 300px;
+    overflow-y: auto;
+}
 .tab {
     padding-left: 10px;
 }

@@ -1,10 +1,12 @@
 var chatApp = angular.module("chatApp", []);
 var socket = io();
 chatApp.controller("mainController", function($scope, $timeout) {
+    var chatScrollBox = document.getElementById("message-list");
     var messageCounter = 0;
     $scope.messages = [];
     $scope.textStyle = {};
     $scope.userName = '';
+    $scope.message = '';
     $scope.send = function() {
         if ($scope.message[0] === '/') {
             command = $scope.message.split(' ');
@@ -58,6 +60,7 @@ chatApp.controller("mainController", function($scope, $timeout) {
                 }
             );
         });
+        chatScrollBox.scrollTop = chatScrollBox.scrollHeight;
     });
     socket.on('notice', function(msg) {
         if ($scope.userName === '') {
@@ -77,6 +80,9 @@ chatApp.controller("mainController", function($scope, $timeout) {
                     from: 'system'
                 }
             );
+        });
+        $timeout(function() {
+            chatScrollBox.scrollTop = chatScrollBox.scrollHeight;
         });
     }
 });
