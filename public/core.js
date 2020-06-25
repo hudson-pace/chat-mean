@@ -18,7 +18,7 @@ chatApp.controller("mainController", function($scope, $timeout) {
                         s.color = command[1]
                         if (s.color === command[1]) {
                             $scope.textStyle.color = command[1];
-                            sendNotice('text color set to ' + command[1]);
+                            sendNotice('text color set to ' + command[1] + '.');
                         }
                         else {
                             sendNotice(command[1] + ' is not a valid color.');
@@ -30,7 +30,12 @@ chatApp.controller("mainController", function($scope, $timeout) {
                     break;
                 case '/setname':
                     if (command.length === 2) {
-                        $scope.userName = command[1];
+                        if (command[1].startsWith('anon_')) {
+                            sendNotice('names beginning with "anon_" are reserved.');
+                        }
+                        else {
+                            socket.emit('change_name', command[1]);
+                        }
                     }
                     else {
                         sendNotice('usage: /setname [name]');
@@ -68,11 +73,20 @@ chatApp.controller("mainController", function($scope, $timeout) {
         });
         chatScrollBox.scrollTop = chatScrollBox.scrollHeight;
     });
-    socket.on('notice', function(msg) {
+    socket.on('login', function(msg) {
         if ($scope.userName === '') {
             $scope.userName = msg;
         }
         sendNotice(msg + ' connected');
+    });
+    socket.on('change_name', function(res) {
+        if (res.taken) {
+            sendNotice('the name "' + res.username + '" is taken.');
+        }
+        else {
+            $scope.userName = res.username;
+            sendNotice('name set to ' + $scope.userName + '.');
+        }
     });
 
     function sendNotice(msg) {

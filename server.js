@@ -9,16 +9,42 @@ app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
 
-var totalConnections = 0;
+var onlineUsers = [];
+var idCounter = 0;
 io.on('connection', function(socket) {
-	totalConnections++;
-	console.log('user connected (anon_' + totalConnections + ').');
-	io.emit('notice', 'anon_' + totalConnections);
+	idCounter++;
+	var user = {
+		id: idCounter,
+		username: 'anon_' + idCounter
+	}
+	onlineUsers.push(user);
+	console.log('user connected: ' + user.username);
+	io.emit('login', user.username);
+
 	socket.on('chat message', function(msg) {
 		io.emit('chat message', msg);
 	});
+
 	socket.on('disconnect', function() {
 		console.log('user disconnected.');
+		onlineUsers.splice(onlineUsers.indexOf(user), 1);
+	});
+
+	socket.on('change_name', function(name) {
+		let taken = false;
+		for (let i = 0; i < onlineUsers.length; i++) {
+			if (onlineUsers[i].username === name) {
+				taken = true;
+				break;
+			}
+		}
+		if (!taken) {
+			user.username = name;
+		}
+		socket.emit('change_name', {
+			taken: taken,
+			username: name
+		});
 	});
 });
 
