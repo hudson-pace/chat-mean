@@ -1,10 +1,6 @@
 body {
     text-align: center;
 }
-ul {
-    height: 300px;
-    overflow-y: auto;
-}
 .tab {
     padding-left: 10px;
 }
@@ -19,4 +15,8 @@ ul {
 #message-list {
     text-align: left;
     list-style: none;
+    word-wrap: break-word;
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

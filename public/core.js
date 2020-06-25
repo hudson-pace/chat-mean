@@ -36,6 +36,12 @@ chatApp.controller("mainController", function($scope, $timeout) {
                         sendNotice('usage: /setname [name]');
                     }
                     break;
+                case '/help':
+                    sendNotice('available commands: help, setcolor, setname')
+                    break;
+                default:
+                    sendNotice('unknown command. use /help for a list of commands.')
+                    break;
             }
         }
         else {
