@@ -1,6 +1,6 @@
 var chatApp = angular.module("chatApp", []);
 var socket = io();
-chatApp.controller("mainController", function($scope) {
+chatApp.controller("mainController", function($scope, $timeout) {
     var messageCounter = 0;
     $scope.messages = [];
     $scope.textStyle = {};
@@ -10,14 +10,29 @@ chatApp.controller("mainController", function($scope) {
             command = $scope.message.split(' ');
             switch (command[0]) {
                 case '/setcolor':
-                    var s = new Option().style;
-                    s.color = command[1]
-                    if (s.color === command[1]) {
-                        $scope.textStyle.color = command[1];
+                    if (command.length === 2)
+                    {
+                        var s = new Option().style;
+                        s.color = command[1]
+                        if (s.color === command[1]) {
+                            $scope.textStyle.color = command[1];
+                            sendNotice('text color set to ' + command[1]);
+                        }
+                        else {
+                            sendNotice(command[1] + ' is not a valid color.');
+                        }
+                    }
+                    else {
+                        sendNotice('usage: /setcolor [color]');
                     }
                     break;
                 case '/setname':
-                    $scope.userName = command[1];
+                    if (command.length === 2) {
+                        $scope.userName = command[1];
+                    }
+                    else {
+                        sendNotice('usage: /setname [name]');
+                    }
                     break;
             }
         }
@@ -48,16 +63,20 @@ chatApp.controller("mainController", function($scope) {
         if ($scope.userName === '') {
             $scope.userName = msg;
         }
+        sendNotice(msg + ' connected');
+    });
+
+    function sendNotice(msg) {
         messageCounter++;
-        $scope.$apply(function() {
+        $timeout(function() {
             $scope.messages.push(
                 {
                     index: messageCounter,
-                    text: msg + " connected",
+                    text: msg,
                     style: {'background-color': '#eb877c'},
                     from: 'system'
                 }
-            )
-        })
-    });
+            );
+        });
+    }
 });
