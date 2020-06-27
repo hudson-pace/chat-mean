@@ -2,12 +2,16 @@
 <html ng-app="chatApp">
 <head>
 	<title>chat</title>
+	<base href="/">
 	<link rel="stylesheet" href="style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="core.js"></script>
+	<script src="config.js"></script>
 </head>
 <body ng-controller="mainController">
+	<div ng-view></div>
 	<div id="chatbox-container">
 		<div id="chatbox-header">chat</div>
 		<ul id="message-list">
