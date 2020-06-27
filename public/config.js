@@ -3,8 +3,8 @@ angular.module('chatApp').config(function($routeProvider, $locationProvider) {
         .when('/home', {
             templateUrl: 'home.html'
         })
-        .when('/test', {
-            templateUrl: 'test.html'
+        .when('/login', {
+            templateUrl: 'login.html'
         })
         .otherwise('/home');
 

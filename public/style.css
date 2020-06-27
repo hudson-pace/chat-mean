@@ -59,3 +59,37 @@ li {
     height: 60%;
     margin-top: .3em;
 }
+
+#login-form {
+    width: 20em;
+    padding: 3em;
+    margin: 5em auto 0;
+    background-color: #ffffff;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+form input {
+    outline: 0;
+    border: 0;
+    background-color: #f2f2f2;
+    width: 100%;
+    margin-top: .5em;
+    margin-bottom: .5em;
+    font-size: 1em;
+    padding: .8em;
+    box-sizing: border-box;
+}
+
+form button {
+    outline: 0;
+    border: 0;
+    background-color: #f2f2f2;
+    width: 100%;
+    margin-top: 1em;
+    font-size: 1em;
+    padding: .8em;
+    box-sizing: border-box;
+}
+form button:hover, form button:active, form button:focus {
+    background-color: #eaeaea;
+}
