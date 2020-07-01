@@ -60,7 +60,7 @@ li {
     margin-top: .3em;
 }
 
-#login-form {
+form {
     width: 20em;
     padding: 3em;
     margin: 5em auto 0;

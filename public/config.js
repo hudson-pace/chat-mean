@@ -6,6 +6,9 @@ angular.module('chatApp').config(function($routeProvider, $locationProvider) {
         .when('/login', {
             templateUrl: 'login.html'
         })
+        .when('/register', {
+            templateUrl: 'register.html'
+        })
         .otherwise('/home');
 
         // use the html5 history api
