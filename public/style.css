@@ -93,3 +93,6 @@ form button {
 form button:hover, form button:active, form button:focus {
     background-color: #eaeaea;
 }
+form button:disabled {
+    background-color: #dfdfdf;
+}

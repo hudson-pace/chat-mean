@@ -4,7 +4,7 @@ angular.module('chatApp').config(function($routeProvider, $locationProvider) {
             templateUrl: 'home.html'
         })
         .when('/login', {
-            templateUrl: 'login.html'
+            templateUrl: 'authentication/views/login.html'
         })
         .when('/register', {
             templateUrl: 'register.html'

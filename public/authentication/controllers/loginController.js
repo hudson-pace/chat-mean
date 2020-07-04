@@ -2,6 +2,7 @@ var chatApp = angular.module("chatApp").controller('loginController', ['$scope',
     function($scope, $rootScope, $location, AuthenticationService) {
         // reset login status
         AuthenticationService.ClearCredentials();
+        
         $scope.login = function() {
             $scope.dataLoading = true;
             AuthenticationService.Login($scope.username, $scope.password, function(response) {
