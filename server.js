@@ -1,11 +1,8 @@
 var express = require('express');
 var app = express();
-var mongoose = require('mongoose');
 var database = require('./config/database');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-
-mongoose.connect(database.url);
 
 app.use(express.static(__dirname + '/public'));
 
