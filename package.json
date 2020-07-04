@@ -9,8 +9,11 @@
   "author": "hudson",
   "license": "ISC",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "angular": "^1.8.0",
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.20",
     "passport": "^0.4.1",

@@ -5,6 +5,8 @@ var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
+//app.use('/users', require('./users/users.controller'));
+//app.use(errorHandler);
 
 app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
