@@ -21,7 +21,7 @@ angular.module('chatApp')
         $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
     }
     $rootScope.$on('$locationChangeStart', function(event, next, current) {
-        if ($location.path() === '/login' && $rootScope.gloabls.currentUser) {
+        if ($location.path() === '/login' && $rootScope.globals.currentUser) {
             $location.path('/home');
         }
     })
