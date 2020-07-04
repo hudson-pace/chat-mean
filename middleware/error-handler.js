@@ -17,6 +17,6 @@ function errorHandler(err, req, res, next) {
         return res.status(401).json({message: "Unauthorized"});
     }
     else {
-        return res.status(500).json({message: error.message});
+        return res.status(500).json({message: err.message});
     }
 }

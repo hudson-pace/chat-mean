@@ -1,12 +1,19 @@
 var express = require('express');
 var app = express();
-var database = require('./config/database');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var cors = require('cors');
+var errorHandler = require('./middleware/error-handler');
 
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(cors({origin: (origin, callback) => callback(null, true), credentials: true}));
 app.use(express.static(__dirname + '/public'));
-//app.use('/users', require('./users/users.controller'));
-//app.use(errorHandler);
+app.use('/users', require('./users/users.controller'));
+app.use(errorHandler);
 
 app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
