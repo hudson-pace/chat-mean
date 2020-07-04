@@ -1,4 +1,4 @@
-var chatApp = angular.module("chatApp", ['ngRoute']);
+var chatApp = angular.module("chatApp", ['ngRoute', 'ngCookies']);
 var socket = io();
 chatApp.controller("mainController", function($scope, $timeout) {
     var chatScrollBox = document.getElementById("message-list");
