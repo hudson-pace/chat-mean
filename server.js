@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
+var path = require('path');
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -11,12 +12,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({origin: (origin, callback) => callback(null, true), credentials: true}));
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'public', 'dist', 'ChatApp')));
 app.use('/users', require('./users/users.controller'));
 app.use(errorHandler);
 
 app.get('*', function(req, res) {
-	res.sendFile(__dirname + '/public/index.html');
+	res.sendFile(path.join(__dirname, 'public', 'dist', 'ChatApp', 'index.html'));
 });
 
 var onlineUsers = [];
