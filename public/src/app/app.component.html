@@ -1,6 +1,7 @@
 <nav>
-  <a>Home</a>
-  <a>Login</a>
+  <a routerLink="/">Home</a>
+  <a routerLink="/login" *ngIf="!user">Login</a>
+  <a (click)="logout()" *ngIf="user">Logout</a>
 </nav>
 <div>
   <router-outlet></router-outlet>

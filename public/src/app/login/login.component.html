@@ -1,8 +1,6 @@
-<form id = "login-form" ng-submit="login()" [formGroup]="loginForm">
+<form id = "login-form" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
     <div ng-show="error">{{error}}</div>
-    <input type="text" placeholder="username">
-    <input type="password" placeholder="password">
+    <input type="text" placeholder="username" formControlName="username">
+    <input type="password" placeholder="password" formControlName="password">
     <button type="submit">login</button>
-    <p><a href="home">home</a></p>
-    <p><a href="register">register</a></p>
 </form>
