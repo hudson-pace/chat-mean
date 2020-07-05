@@ -1,1 +1,8 @@
-<p>login works!</p>
+<form id = "login-form" ng-submit="login()">
+    <div ng-show="error">{{error}}</div>
+    <input type="text" placeholder="username">
+    <input type="password" placeholder="password">
+    <button type="submit">login</button>
+    <p><a href="home">home</a></p>
+    <p><a href="register">register</a></p>
+</form>
