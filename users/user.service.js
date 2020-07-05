@@ -41,7 +41,7 @@ async function refreshToken({ token, ipAddress}) {
     var newRefreshToken = generateRefreshToken(user, ipAddress);
     refreshToken.revoked = Date.now();
     refreshToken.revokedByIp = ipAddress;
-    refreshToken.replacedByToken = rewRefreshToken.token;
+    refreshToken.replacedByToken = newRefreshToken.token;
     await refreshToken.save();
     await newRefreshToken.save();
 
@@ -50,7 +50,7 @@ async function refreshToken({ token, ipAddress}) {
     return {
         ...basicDetails(user),
         jwtToken,
-        refreshToken: refreshToken.token
+        refreshToken: newRefreshToken.token
     }
 }
 
