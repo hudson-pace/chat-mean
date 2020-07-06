@@ -34,7 +34,7 @@ export class AuthenticationService {
     }
 
     register(username: string, password: string) {
-        return this.http.post<any>(`${environment.apiUrl}/users/register`, { username, password }, { withCredentials: true })
+        return this.http.post<any>(`${environment.apiUrl}/users/register`, { user: { username, password } }, { withCredentials: true })
             .pipe(map(user => {
                 this.userSubject.next(user);
                 this.startRefreshTokenTimer();

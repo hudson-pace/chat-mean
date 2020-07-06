@@ -13,6 +13,7 @@ import { appInitializer } from './helpers/app.initializer';
 import { AuthenticationService } from './services/authentication.service';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
+import { RegisterComponent } from './register/register.component';
 
 var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -21,7 +22,8 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     AppComponent,
     HomeComponent,
     LoginComponent,
-    ChatComponent
+    ChatComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
