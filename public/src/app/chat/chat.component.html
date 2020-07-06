@@ -1,0 +1,10 @@
+<div id="chatbox-container">
+    <div id="chatbox-header">chat</div>
+    <ul id="message-list">
+        <li ng-repeat="x in messages">{{x.from}}: <span class="tab"></span> <span ng-style="x.style">{{x.text}}</span></li>
+    </ul>
+    <div id="chatbox-controls">
+        <input ng-style="textStyle" ng-model="message" autocomplete="off" ng-keydown="$event.keyCode === 13 && send()">
+        <button ng-click="send()">-></button>
+    </div>
+</div>
