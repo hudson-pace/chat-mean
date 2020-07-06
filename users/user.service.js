@@ -5,9 +5,12 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var db = require('../helpers/db');
+var { User } = require('../helpers/db');
+var role = require('../helpers/role');
 
 module.exports = {
     authenticate,
+    register,
     refreshToken,
     revokeToken,
     getAll,
@@ -18,13 +21,41 @@ module.exports = {
 async function authenticate({ username, password, ipAddress}) {
     var user = await db.User.findOne({username});
     if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
-        throw 'Username or password is incorrect';
+        throw 'username or password is incorrect';
     }
 
     // generate jwt and refresh tokens on successful authentication
     var jwtToken = generateJwtToken(user);
     var refreshToken = generateRefreshToken(user, ipAddress);
 
+    await refreshToken.save();
+
+    return {
+        ...basicDetails(user),
+        jwtToken,
+        refreshToken: refreshToken.token
+    };
+}
+
+async function register(userParams, ipAddress) {
+    console.log(userParams);
+    console.log('0');
+    if (await User.findOne({ username: userParams.username })) {
+        throw 'username is taken';
+    }
+    console.log('0.5');
+    var user = new User();
+    user.username = userParams.username;
+    console.log('.75');
+    user.passwordHash = bcrypt.hashSync(userParams.password, 10);
+    console.log('.8');
+    user.role = role.User;
+    console.log('1');
+    await user.save();
+    console.log('2');
+
+    var jwtToken = generateJwtToken(user);
+    var refreshToken = generateRefreshToken(user, ipAddress);
     await refreshToken.save();
 
     return {

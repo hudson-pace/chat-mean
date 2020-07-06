@@ -8,6 +8,7 @@ var userService = require('./user.service');
 
 //routes
 router.post('/authenticate', authenticateSchema, authenticate);
+router.post('/register', registerSchema, register);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
 router.get('/', authorize(Role.Admin), getAll);
@@ -23,12 +24,31 @@ function authenticateSchema(req, res, next) {
     });
     validateRequest(req, next, schema);
 }
-
 function authenticate(req, res, next) {
     var {username, password} = req.body;
     var ipAddress = req.ip;
     userService.authenticate({username, password, ipAddress})
         .then(({refreshToken, ...user}) => {
+            setTokenCookie(res, refreshToken);
+            res.json(user);
+        })
+        .catch(next);
+}
+
+function registerSchema(req, res, next) {
+    var schema = Joi.object({
+        user: Joi.object({
+            username: Joi.string().required(),
+            password: Joi.string().required()
+        }).required()
+    });
+    validateRequest(req, next, schema);
+}
+function register(req, res, next) {
+    var userParams = req.body.user;
+    var ipAddress = req.ip;
+    userService.register(userParams, ipAddress)
+        .then(({ refreshToken, ...user }) => {
             setTokenCookie(res, refreshToken);
             res.json(user);
         })

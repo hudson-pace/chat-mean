@@ -33,6 +33,15 @@ export class AuthenticationService {
             }));
     }
 
+    register(username: string, password: string) {
+        return this.http.post<any>(`${environment.apiUrl}/users/register`, { username, password }, { withCredentials: true })
+            .pipe(map(user => {
+                this.userSubject.next(user);
+                this.startRefreshTokenTimer();
+                return user;
+            }));
+    }
+
     logout() {
         this.http.post<any>(`${environment.apiUrl}/users/revoke-token`, {}, { withCredentials: true }).subscribe();
         this.stopRefreshTokenTimer();
