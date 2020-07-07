@@ -1,8 +1,19 @@
 <nav>
-  <a routerLink="/">Home</a>
-  <a routerLink="/login" *ngIf="!user">Login</a>
-  <a routerLink="/register" *ngIf="!user">Register</a>
-  <a (click)="logout()" *ngIf="user">Logout</a>
+  <ul>
+    <a routerLink="/"><li [ngClass]="{
+      'active': this.router.url === '/'
+    }"
+    >Home</li></a>
+    <a routerLink="/login"><li [ngClass]="{
+      'active': this.router.url === '/login'
+    }"
+    *ngIf="!user">Login</li></a>
+    <a routerLink="/register"><li [ngClass]="{
+      'active': this.router.url === '/register'
+    }"
+    *ngIf="!user">Register</li></a>
+    <a (click)="logout()"><li *ngIf="user">Logout</li></a>
+  </ul>
 </nav>
 <div>
   <router-outlet></router-outlet>
