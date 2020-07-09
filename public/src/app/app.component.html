@@ -1,5 +1,7 @@
 <nav>
   <ul>
+    <li *ngIf="user">{{user.username}}</li>
+    <li *ngIf="!user">-</li>
     <a routerLink="/"><li [ngClass]="{
       'active': this.router.url === '/'
     }"
@@ -18,4 +20,4 @@
 <div>
   <router-outlet></router-outlet>
 </div>
-<app-chat *ngIf="user"></app-chat>
+<app-chat></app-chat>
