@@ -14,8 +14,9 @@ import { AuthenticationService } from './services/authentication.service';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { RegisterComponent } from './register/register.component';
+import { environment } from '../environments/environment';
 
-var config: SocketIoConfig = { url: 'http://http://ec2-18-204-11-209.compute-1.amazonaws.com/:3000', options: {} };
+var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
 @NgModule({
   declarations: [
