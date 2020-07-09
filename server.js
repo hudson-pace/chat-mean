@@ -26,6 +26,7 @@ app.get('*', function(req, res) {
 
 var onlineUsers = [];
 var nameCounter = 0;
+var idCounter = 0;
 io.on('connection', function(socket) {
 	nameCounter++;
 	var user = {
@@ -36,6 +37,9 @@ io.on('connection', function(socket) {
 	io.emit('login', user.username);
 
 	socket.on('chat message', function(msg) {
+		msg.from = user.username;
+		msg.id = idCounter;
+		idCounter++;
 		io.emit('chat message', msg);
 	});
 
@@ -72,7 +76,13 @@ io.on('connection', function(socket) {
 		});
 	});
 	socket.on('list_users', function() {
-		socket.emit('list_users', onlineUsers);
+		msg = {
+			id: idCounter,
+			text: onlineUsers.map(x => x.username).join(' '),
+			from: 'server'
+		}
+		idCounter++;
+		socket.emit('notice', msg);
 	});
 });
 

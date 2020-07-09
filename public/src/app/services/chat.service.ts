@@ -15,11 +15,19 @@ export class ChatService {
         });
     }
 
-    sendMessage(message: ChatMessage) {
-        this.socket.emit('chat message', message)
+    send(event, payload) {
+        if (payload) {
+            this.socket.emit(event, payload);
+        }
+        else {
+            this.socket.emit(event);
+        }
     }
 
     receiveMessages() {
         return this.socket.fromEvent<ChatMessage>('chat message');
+    }
+    receiveNotices() {
+        return this.socket.fromEvent<ChatMessage>('notice');
     }
 }

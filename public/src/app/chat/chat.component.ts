@@ -22,6 +22,7 @@ export class ChatComponent implements OnInit {
     }));
 
     this.subscription.add(this.chatService.receiveMessages().subscribe(x => this.messages.push(x)));
+    this.subscription.add(this.chatService.receiveNotices().subscribe(x => this.messages.push(x)));
   }
 
   ngOnInit(): void {
@@ -32,7 +33,17 @@ export class ChatComponent implements OnInit {
   }
 
   send() {
-    this.chatService.sendMessage({ id: 0, text: this.message, from: this.username });
+    if (this.message.startsWith('/')) {
+      var command = this.message.split(' ');
+      switch (command[0]) {
+        case '/list':
+          this.chatService.send('list_users', null);
+          break;
+      }
+    }
+    else {
+      this.chatService.send('chat message', { id: 0, text: this.message, from: this.username });
+    }
     this.message = '';
   }
 }
