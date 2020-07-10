@@ -16,6 +16,9 @@ li.active {
     background-color: #dedede;
 }
 
+a {
+    color: black;
+}
 a:hover {
     cursor: pointer;
 }
