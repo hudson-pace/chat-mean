@@ -15,6 +15,7 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { RegisterComponent } from './register/register.component';
 import { environment } from '../environments/environment';
+import { MoveAroundComponent } from './games/move-around/move-around.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -24,7 +25,8 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     HomeComponent,
     LoginComponent,
     ChatComponent,
-    RegisterComponent
+    RegisterComponent,
+    MoveAroundComponent
   ],
   imports: [
     BrowserModule,
