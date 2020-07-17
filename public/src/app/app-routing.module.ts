@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './helpers/auth-guard';
 import { MoveAroundComponent } from './games/move-around/move-around.component';
+import { BattleshipComponent } from './games/battleship/battleship.component';
 
 
 const routes: Routes = [
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'games/move-around', component: MoveAroundComponent},
+  { path: 'games/battleship', component: BattleshipComponent},
   { path: '**', redirectTo: '' } // default to home
 ];
 

@@ -1,0 +1,11 @@
+table {
+    background-color: black;
+    display: inline-block;
+    margin-top: 5em;
+}
+
+td {
+    width: 3em;
+    height: 3em;
+    background-color: white;
+}

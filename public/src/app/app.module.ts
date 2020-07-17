@@ -16,6 +16,7 @@ import { ErrorInterceptor } from './helpers/error.interceptor';
 import { RegisterComponent } from './register/register.component';
 import { environment } from '../environments/environment';
 import { MoveAroundComponent } from './games/move-around/move-around.component';
+import { BattleshipComponent } from './games/battleship/battleship.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -26,7 +27,8 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     LoginComponent,
     ChatComponent,
     RegisterComponent,
-    MoveAroundComponent
+    MoveAroundComponent,
+    BattleshipComponent
   ],
   imports: [
     BrowserModule,

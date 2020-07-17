@@ -15,10 +15,10 @@
     }"
     *ngIf="!user">Register</li></a>
     <a (click)="logout()"><li *ngIf="user">Logout</li></a>
-    <a routerLink="/games/move-around"><li [ngClass]="{
-      'active': this.router.url === '/games/move-around'
+    <a routerLink="/games/battleship"><li [ngClass]="{
+      'active': this.router.url === '/games/battleship'
     }"
-    >Move Around</li></a>
+    >Battleship</li></a>
   </ul>
 </nav>
 <div>
