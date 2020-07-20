@@ -9,3 +9,7 @@ td {
     height: 3em;
     background-color: white;
 }
+
+td:hover {
+    background-color: grey;
+}
