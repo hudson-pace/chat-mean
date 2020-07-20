@@ -13,3 +13,7 @@ td {
 td:hover {
     background-color: grey;
 }
+
+.clicked {
+    background-color: pink;
+}

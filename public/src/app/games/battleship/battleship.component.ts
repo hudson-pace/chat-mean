@@ -7,15 +7,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BattleshipComponent implements OnInit {
 
-  rows: number[];
-  columns: number[];
+  squares: number[][];
+  height: number = 10;
+  width: number = 10;
   
   constructor() {
-    this.rows = Array(10).fill(0).map((x, i) => i);
-    this.columns = Array(10).fill(0).map((x, i) => i);
+    this.squares = [];
+    for (let i = 0; i < this.height; i++) {
+      this.squares.push([]);
+      for (let j = 0; j < this.height; j++) {
+        this.squares[i].push(0);
+      }
+    }
   }
 
   ngOnInit(): void {
+  }
+
+  onClickSquare(i: number, j: number) {
+    this.squares[i][j] = 1;
   }
 
 }

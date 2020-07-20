@@ -1,5 +1,8 @@
 <table>
-    <tr *ngFor="let row of rows">
-        <td *ngFor="let column of columns"></td>
+    <tr *ngFor="let row of squares; index as i">
+        <td *ngFor="let square of row; index as j" [ngClass]="{
+            'clicked': square === 1
+          }"
+          (click) = 'onClickSquare(i, j)'>{{square}}</td>
     </tr>
 </table>
