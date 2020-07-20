@@ -7,16 +7,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BattleshipComponent implements OnInit {
 
-  squares: number[][];
-  height: number = 10;
-  width: number = 10;
+  playerBoard: number[][];
+  enemyBoard: number[][];
+  height: number = 8;
+  width: number = 8;
   
   constructor() {
-    this.squares = [];
+    this.playerBoard = [];
+    this.enemyBoard = [];
     for (let i = 0; i < this.height; i++) {
-      this.squares.push([]);
+      this.playerBoard.push([]);
+      this.enemyBoard.push([]);
       for (let j = 0; j < this.height; j++) {
-        this.squares[i].push(0);
+        this.playerBoard[i].push(0);
+        this.enemyBoard[i].push(0);
       }
     }
   }
@@ -24,8 +28,11 @@ export class BattleshipComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onClickSquare(i: number, j: number) {
-    this.squares[i][j] = 1;
+  onClickPlayerSquare(i: number, j: number) {
+    this.playerBoard[i][j] = 1;
+  }
+  onClickEnemySquare(i: number, j:number) {
+    this.enemyBoard[i][j] = 2;
   }
 
 }

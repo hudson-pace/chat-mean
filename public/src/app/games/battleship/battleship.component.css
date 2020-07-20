@@ -1,7 +1,7 @@
 table {
     background-color: black;
     display: inline-block;
-    margin-top: 5em;
+    margin-top: 1em;
 }
 
 td {
@@ -16,4 +16,7 @@ td:hover {
 
 .clicked {
     background-color: pink;
+}
+.enemy-clicked {
+    background-color: yellow;
 }

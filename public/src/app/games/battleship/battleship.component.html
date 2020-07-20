@@ -1,8 +1,21 @@
-<table>
-    <tr *ngFor="let row of squares; index as i">
-        <td *ngFor="let square of row; index as j" [ngClass]="{
-            'clicked': square === 1
-          }"
-          (click) = 'onClickSquare(i, j)'>{{square}}</td>
-    </tr>
-</table>
+<div>
+    <table>
+        <tr *ngFor="let row of enemyBoard; index as i">
+            <td *ngFor="let square of row; index as j" [ngClass]="{
+                'enemy-clicked': square === 2
+            }"
+            (click) = 'onClickEnemySquare(i, j)'>{{square}}</td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <table>
+        <tr *ngFor="let row of playerBoard; index as i">
+            <td *ngFor="let square of row; index as j" [ngClass]="{
+                'clicked': square === 1
+            }"
+            (click) = 'onClickPlayerSquare(i, j)'>{{square}}</td>
+        </tr>
+    </table>
+</div>
