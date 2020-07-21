@@ -2,9 +2,9 @@
     <table>
         <tr *ngFor="let row of enemyBoard; index as i">
             <td *ngFor="let square of row; index as j" [ngClass]="{
-                'enemy-clicked': square === 2
+                'enemy-clicked': square[0] === 2
             }"
-            (click) = 'onClickEnemySquare(i, j)'>{{square}}</td>
+            (click) = 'onClickEnemySquare(i, j)'><div class='hover-layer'><div>{{square}}</div></div></td>
         </tr>
     </table>
 </div>
@@ -13,9 +13,9 @@
     <table>
         <tr *ngFor="let row of playerBoard; index as i">
             <td *ngFor="let square of row; index as j" [ngClass]="{
-                'clicked': square === 1
+                'clicked': square[0] === 1
             }"
-            (click) = 'onClickPlayerSquare(i, j)'>{{square}}</td>
+            (click) = 'onClickPlayerSquare(i, j)'><div class='hover-layer'>{{square}}</div></td>
         </tr>
     </table>
 </div>

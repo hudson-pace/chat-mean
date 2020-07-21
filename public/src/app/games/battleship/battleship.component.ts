@@ -7,8 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BattleshipComponent implements OnInit {
 
-  playerBoard: number[][];
-  enemyBoard: number[][];
+  playerBoard: number[][][];
+  enemyBoard: number[][][];
   height: number = 8;
   width: number = 8;
   
@@ -19,8 +19,8 @@ export class BattleshipComponent implements OnInit {
       this.playerBoard.push([]);
       this.enemyBoard.push([]);
       for (let j = 0; j < this.height; j++) {
-        this.playerBoard[i].push(0);
-        this.enemyBoard[i].push(0);
+        this.playerBoard[i].push([0, 0]);
+        this.enemyBoard[i].push([0, 0]);
       }
     }
   }
@@ -29,10 +29,10 @@ export class BattleshipComponent implements OnInit {
   }
 
   onClickPlayerSquare(i: number, j: number) {
-    this.playerBoard[i][j] = 1;
+    this.playerBoard[i][j][0] = 1;
   }
   onClickEnemySquare(i: number, j:number) {
-    this.enemyBoard[i][j] = 2;
+    this.enemyBoard[i][j][0] = 2;
   }
 
 }

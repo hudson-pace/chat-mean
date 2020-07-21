@@ -10,8 +10,11 @@ td {
     background-color: white;
 }
 
-td:hover {
-    background-color: grey;
+.hover-layer {
+    height: 100%;
+}
+.hover-layer:hover {
+    background-color: rgba(0, 0, 0, .2);
 }
 
 .clicked {
