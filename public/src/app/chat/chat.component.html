@@ -1,7 +1,9 @@
 <div id="chatbox-container">
     <div id="chatbox-header">chat</div>
     <ul id="message-list">
-        <li *ngFor="let x of messages">{{x.from}}: <span class="tab"></span> <span ng-style="x.style">{{x.text}}</span></li>
+        <li *ngFor="let x of messages">{{x.from}}: <span class="tab"></span>
+            <span ng-style="x.style">{{x.text}} <span [innerhtml]="x.html"></span></span>
+        </li>
     </ul>
     <div id="chatbox-controls">
         <input [(ngModel)]="message" autocomplete="off" (keydown.enter)="send()">

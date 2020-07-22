@@ -30,4 +30,7 @@ export class ChatService {
     receiveNotices() {
         return this.socket.fromEvent<ChatMessage>('notice');
     }
+    receiveInvites() {
+        return this.socket.fromEvent<ChatMessage>('invite');
+    }
 }

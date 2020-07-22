@@ -27,20 +27,27 @@ app.get('*', function(req, res) {
 var onlineUsers = [];
 var nameCounter = 0;
 var idCounter = 0;
+var chatroomCounter = 0;
+var chatrooms = [];
 io.on('connection', function(socket) {
 	nameCounter++;
 	var user = {
-		username: 'anon_' + nameCounter
+		username: 'anon_' + nameCounter,
+		current_room: {
+			id: 'public'
+		},
+		id: socket.id
 	}
 	onlineUsers.push(user);
 	console.log('user connected: ' + user.username);
+	socket.join(user.current_room.id);
 	io.emit('login', user.username);
 
 	socket.on('chat message', function(msg) {
 		msg.from = user.username;
 		msg.id = idCounter;
 		idCounter++;
-		io.emit('chat message', msg);
+		io.to(user.current_room.id).emit('chat message', msg);
 	});
 
 	socket.on('disconnect', function() {
@@ -83,6 +90,39 @@ io.on('connection', function(socket) {
 		}
 		idCounter++;
 		socket.emit('notice', msg);
+	});
+
+	socket.on('create_room', function() {
+		var room = {
+			id: chatroomCounter.toString()
+		};
+		chatroomCounter++;
+		socket.leave(user.current_room.id);
+		user.current_room = room;
+		socket.join(room.id);
+
+		msg = {
+			id: idCounter,
+			text: 'new room created with id ' + room.id,
+			from: 'server'
+		}
+		socket.emit('notice', msg);
+	});
+
+	socket.on('invite_to_room', function(userToInvite) {
+		console.log('inviting ' + userToInvite + '...');
+		msg = {
+			id: idCounter,
+			text: user.username + ' has invited you to a private chatroom.',
+			from: 'server'
+		}
+		for (let i = 0; i < onlineUsers.length; i++) {
+			if (onlineUsers[i].username === userToInvite) {
+				console.log('user located...');
+				socket.to(onlineUsers[i].id).emit('invite', msg);
+				break;
+			}
+		}
 	});
 });
 

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../services/chat.service'
 import { AuthenticationService } from '../services/authentication.service'
 import { Subscription } from 'rxjs';
+import { UrlHandlingStrategy } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -23,6 +24,9 @@ export class ChatComponent implements OnInit {
 
     this.subscription.add(this.chatService.receiveMessages().subscribe(x => this.messages.push(x)));
     this.subscription.add(this.chatService.receiveNotices().subscribe(x => this.messages.push(x)));
+    this.subscription.add(this.chatService.receiveInvites().subscribe(x => {
+      this.messages.push(x);
+    }));
   }
 
   ngOnInit(): void {
@@ -38,6 +42,21 @@ export class ChatComponent implements OnInit {
       switch (command[0]) {
         case '/list':
           this.chatService.send('list_users', null);
+          break;
+        case '/createRoom':
+          this.chatService.send('create_room', null);
+          break;
+        case '/invite':
+          if (command.length !== 2) {
+            this.messages.push({
+              id: 0,
+              from: 'USAGE',
+              text: '/invite [name]'
+            });
+          }
+          else {
+            this.chatService.send('invite_to_room', command[1]);
+          }
           break;
       }
     }
