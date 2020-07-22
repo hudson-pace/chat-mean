@@ -24,9 +24,6 @@ export class ChatComponent implements OnInit {
 
     this.subscription.add(this.chatService.receiveMessages().subscribe(x => this.messages.push(x)));
     this.subscription.add(this.chatService.receiveNotices().subscribe(x => this.messages.push(x)));
-    this.subscription.add(this.chatService.receiveInvites().subscribe(x => {
-      this.messages.push(x);
-    }));
   }
 
   ngOnInit(): void {
@@ -57,6 +54,31 @@ export class ChatComponent implements OnInit {
           else {
             this.chatService.send('invite_to_room', command[1]);
           }
+          break;
+        case '/join':
+          if (command.length !== 2) {
+            this.messages.push({
+              id: 0,
+              from: 'USAGE',
+              text: '/join [room]'
+            });
+          }
+          else {
+            this.chatService.send('join_room', command[1]);
+          }
+          break;
+        case '/rooms':
+          this.chatService.send('list_rooms', null);
+          break;
+        case '/room':
+          this.chatService.send('get_current_room', null);
+          break;
+        default:
+          this.messages.push({
+            id: 0,
+            from: 'ERROR',
+            text: 'unknown command'
+          });
           break;
       }
     }

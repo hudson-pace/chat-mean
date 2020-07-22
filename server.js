@@ -29,13 +29,18 @@ var nameCounter = 0;
 var idCounter = 0;
 var chatroomCounter = 0;
 var chatrooms = [];
+var publicRoom = {
+	id: 'public',
+	members: {}
+}
+chatrooms.push(publicRoom);
+
 io.on('connection', function(socket) {
 	nameCounter++;
 	var user = {
 		username: 'anon_' + nameCounter,
-		current_room: {
-			id: 'public'
-		},
+		current_room: publicRoom,
+		allowed_rooms: [publicRoom],
 		id: socket.id
 	}
 	onlineUsers.push(user);
@@ -99,6 +104,7 @@ io.on('connection', function(socket) {
 		chatroomCounter++;
 		socket.leave(user.current_room.id);
 		user.current_room = room;
+		user.allowed_rooms.push(room);
 		socket.join(room.id);
 
 		msg = {
@@ -110,19 +116,46 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('invite_to_room', function(userToInvite) {
-		console.log('inviting ' + userToInvite + '...');
+		console.log(userToInvite + ' has been added to ' + user.current_room.id + '.');
 		msg = {
 			id: idCounter,
-			text: user.username + ' has invited you to a private chatroom.',
+			text: user.username + ' has added you to ' + user.current_room.id + '.',
 			from: 'server'
 		}
 		for (let i = 0; i < onlineUsers.length; i++) {
 			if (onlineUsers[i].username === userToInvite) {
-				console.log('user located...');
-				socket.to(onlineUsers[i].id).emit('invite', msg);
+				onlineUsers[i].allowed_rooms.push(user.current_room);
+				socket.to(onlineUsers[i].id).emit('notice', msg);
 				break;
 			}
 		}
+	});
+
+	socket.on('join_room', function(roomName) {
+		for (let i = 0; i < user.allowed_rooms.length; i++) {
+			if (user.allowed_rooms[i].id === roomName) {
+				socket.leave(user.current_room.id);
+				user.current_room = user.allowed_rooms[i];
+				socket.join(roomName);
+				break;
+			}
+		}
+	});
+	socket.on('list_rooms', function() {
+		msg = {
+			id: idCounter,
+			text: user.allowed_rooms.map(x => x.id).join(' '),
+			from: 'server'
+		}
+		socket.emit('notice', msg);
+	});
+	socket.on('get_current_room', function() {
+		msg = {
+			id: idCounter,
+			text: user.current_room.id,
+			from: 'server'
+		}
+		socket.emit('notice', msg);
 	});
 });
 
