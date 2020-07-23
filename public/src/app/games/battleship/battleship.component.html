@@ -14,10 +14,10 @@
         <table>
             <tr *ngFor="let row of enemyBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
-                    'enemy-clicked': square.isHit
+                    'has-boat': square.hasBoat
                 }"
-                (click) = 'onClickEnemySquare(i, j)'><div [ngClass]="{
-                    'selected': square.isSelected
+                (click) = 'onClickEnemySquare(i, j)'>
+                <div [ngClass]="{
                 }"></div></td>
             </tr>
         </table>

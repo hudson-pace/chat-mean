@@ -25,6 +25,7 @@ export class BattleshipComponent implements OnInit {
   width: number = 8;
   phase: Phase = Phase.Start;
   ships: number[] = [4, 3, 2];
+  enemyShips: number[] = [4, 3, 2];
   currentShip: number = this.ships.pop();
   orientation: boolean = false;
   
@@ -34,7 +35,7 @@ export class BattleshipComponent implements OnInit {
     for (let i = 0; i < this.height; i++) {
       this.playerBoard.push([]);
       this.enemyBoard.push([]);
-      for (let j = 0; j < this.height; j++) {
+      for (let j = 0; j < this.width; j++) {
         this.playerBoard[i].push({
           hasBoat: false,
           isHit: false,
@@ -62,97 +63,109 @@ export class BattleshipComponent implements OnInit {
 
   onClickPlayerSquare(x: number, y: number) {
     if (this.playerBoard[x][y].isValid) {
-      for (let i = 0; i < this.currentShip; i++) {
-        if (this.orientation) {
-          this.playerBoard[x + i][y].isValid = false;
-          this.playerBoard[x + i][y].hasBoat = true;
-        }
-        else {
-          this.playerBoard[x][y + i].isValid = false;
-          this.playerBoard[x][y + i].hasBoat = true;
-        }
-      }
+      this.placeBoat(this.playerBoard, x, y, this.currentShip, this.orientation);
+      this.onLeavePlayerSquare(x, y);
       if (this.ships.length > 0) {
-        this.onLeavePlayerSquare(x, y);
         this.currentShip = this.ships.pop();
         this.onEnterPlayerSquare(x, y);
       }
       else {
-        this.onLeavePlayerSquare(x, y);
         this.phase = Phase.MainGame;
       }
     }
   }
   onEnterPlayerSquare(x: number, y: number) {
     if (this.phase === Phase.Setup) {
-      let valid = true;
-      for (let i = 0; i < this.currentShip; i++) {
-        if (this.orientation) {
-          if (x + i < this.height) {
-            this.playerBoard[x + i][y].isSelected = true;
-            this.playerBoard[x + i][y].isValid = true;
-            if (this.playerBoard[x + i][y].hasBoat) {
-              valid = false;
-            }
-          }
-          else {
-            valid = false;
-          }
-        }
-        else {
-          if (y + i < this.width) {
-            this.playerBoard[x][y + i].isSelected = true;
-            this.playerBoard[x][y + i].isValid = true;
-            if (this.playerBoard[x][y + i].hasBoat) {
-              valid = false;
-            }
-          }
-          else {
-            valid = false;
-          }
-        }
-      }
-
-      if (!valid) {
-        for (let i = 0; i < this.currentShip; i++) {
-          if (this.orientation) {
-            if (x + i < this.height) {
-              this.playerBoard[x + i][y].isValid = false;
-            }
-          }
-          else {
-            if (y + i < this.width) {
-              this.playerBoard[x][y + i].isValid = false;
-            }
-          }
-        }
-      }
+      this.changeSquares(this.playerBoard, x, y, this.currentShip, this.orientation, true);
     }
   }
   onLeavePlayerSquare(x: number, y: number) {
     if (this.phase === Phase.Setup) {
-      for(let i = 0; i < this.currentShip; i++) {
-        if (this.orientation) {
-          if (x + i < this.height) {
-            this.playerBoard[x + i][y].isSelected = false;
-            this.playerBoard[x + i][y].isValid = false;
+      this.changeSquares(this.playerBoard, x, y, this.currentShip, this.orientation, false);
+    }
+  }
+  onClickEnemySquare(i: number, j:number) {
+  }
+  onClickSinglePlayer() {
+    this.placeEnemyBoats();
+    this.phase = Phase.Setup;
+  }
+  onClickMultiPlayer() {
+  }
+
+  changeSquares(board: Square[][], x: number, y: number, size: number, orientation: boolean, selecting: boolean) {
+    let valid = true;
+    for (let i = 0; i < size; i++) {
+      if (orientation) {
+        if (x + i < this.height) {
+          board[x + i][y].isSelected = selecting;
+          board[x + i][y].isValid = selecting;
+          if (board[x + i][y].hasBoat) {
+            valid = false;
           }
         }
         else {
-          if (y + i < this.height) {
-            this.playerBoard[x][y + i].isSelected = false;
-            this.playerBoard[x][y + i].isValid = false;
+          valid = false;
+        }
+      }
+      else {
+        if (y + i < this.width) {
+          board[x][y + i].isSelected = selecting;
+          board[x][y + i].isValid = selecting;
+          if (board[x][y + i].hasBoat) {
+            valid = false;
+          }
+        }
+        else {
+          valid = false;
+        }
+      }
+    }
+
+    if (!valid && selecting) {
+      for (let i = 0; i < size; i++) {
+        if (orientation) {
+          if (x + i < this.height) {
+            board[x + i][y].isValid = false;
+          }
+        }
+        else {
+          if (y + i < this.width) {
+            board[x][y + i].isValid = false;
           }
         }
       }
     }
+
+    return valid;
   }
-  onClickEnemySquare(i: number, j:number) {
-    //this.enemyBoard[i][j][0] = 2;
+
+  placeBoat(board: Square[][], x: number, y: number, size: number, orientation: boolean) {
+    for (let i = 0; i < size; i++) {
+      if (orientation) {
+        board[x + i][y].isValid = false;
+        board[x + i][y].hasBoat = true;
+      }
+      else {
+        board[x][y + i].isValid = false;
+        board[x][y + i].hasBoat = true;
+      }
+    }
   }
-  onClickSinglePlayer() {
-    this.phase = Phase.Setup;
-  }
-  onClickMultiPlayer() {
+
+  placeEnemyBoats() {
+    let currentShip: number;
+    while (this.enemyShips.length > 0) {
+      currentShip = this.enemyShips.pop();
+      let x = this.height;
+      let y = this.width;
+      let orientation = false;
+      while (!this.changeSquares(this.enemyBoard, x, y, currentShip, orientation, false)) {
+        x = Math.floor(Math.random() * this.height);
+        y = Math.floor(Math.random() * this.width);
+        orientation = Math.random() >= 0.5;
+      }
+      this.placeBoat(this.enemyBoard, x, y, currentShip, orientation);
+    }
   }
 }
