@@ -14,11 +14,11 @@
         <table>
             <tr *ngFor="let row of enemyBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
-                    'has-boat': square.hasBoat
+                    'has-boat': square.hasBoat && square.isHit,
+                    'is-hit': square.isHit
                 }"
                 (click) = 'onClickEnemySquare(i, j)'>
-                <div [ngClass]="{
-                }"></div></td>
+                <div class="enemy"></div></td>
             </tr>
         </table>
     </div>
@@ -27,7 +27,8 @@
         <table>
             <tr *ngFor="let row of playerBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
-                    'has-boat': square.hasBoat
+                    'has-boat': square.hasBoat,
+                    'is-hit': square.isHit
                 }"
                 (click) = 'onClickPlayerSquare(i, j)'
                 (mouseenter) = 'onEnterPlayerSquare(i, j)'

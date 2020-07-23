@@ -5,6 +5,10 @@ enum Phase {
     Setup,
     MainGame,
 }
+enum Mode {
+  Singleplayer,
+  Multiplayer
+}
 type Square = {
   hasBoat: boolean;
   isHit: boolean;
@@ -19,15 +23,17 @@ type Square = {
 })
 export class BattleshipComponent implements OnInit {
   Phase = Phase;
+  Mode = Mode;
   playerBoard: Square[][];
   enemyBoard: Square[][];
-  height: number = 8;
-  width: number = 8;
+  height: number = 20;
+  width: number = 20;
   phase: Phase = Phase.Start;
   ships: number[] = [4, 3, 2];
   enemyShips: number[] = [4, 3, 2];
   currentShip: number = this.ships.pop();
   orientation: boolean = false;
+  mode: Mode;
   
   constructor() {
     this.playerBoard = [];
@@ -85,10 +91,21 @@ export class BattleshipComponent implements OnInit {
     }
   }
   onClickEnemySquare(i: number, j:number) {
+    if (this.phase === Phase.MainGame && this.mode === Mode.Singleplayer && !this.enemyBoard[i][j].isHit) {
+      this.enemyBoard[i][j].isHit = true;
+      let x: number = Math.floor(Math.random() * this.height);
+      let y: number = Math.floor(Math.random() * this.width);
+      while (this.playerBoard[x][y].isHit) {
+        x = Math.floor(Math.random() * this.height);
+        y = Math.floor(Math.random() * this.width);
+      }
+      this.playerBoard[x][y].isHit = true;
+    }
   }
   onClickSinglePlayer() {
     this.placeEnemyBoats();
     this.phase = Phase.Setup;
+    this.mode = Mode.Singleplayer;
   }
   onClickMultiPlayer() {
   }
