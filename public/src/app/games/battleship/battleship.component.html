@@ -3,20 +3,22 @@
 <div *ngIf="phase === Phase.Start">
     <div>
         <div>
-            <button>singleplayer</button>
-            <button>multiplayer</button>
+            <button (click)="onClickSinglePlayer()">singleplayer</button>
+            <button (click)="onClickMultiPlayer()">multiplayer</button>
         </div>
     </div>
 </div>
 
-<div *ngIf="phase === Phase.MainGame">
-    <div>
+<div *ngIf="phase !== Phase.Start">
+    <div *ngIf="phase === Phase.MainGame">
         <table>
             <tr *ngFor="let row of enemyBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
-                    'enemy-clicked': square[0] === 2
+                    'enemy-clicked': square.isHit
                 }"
-                (click) = 'onClickEnemySquare(i, j)'><div class='hover-layer'><div>{{square}}</div></div></td>
+                (click) = 'onClickEnemySquare(i, j)'><div [ngClass]="{
+                    'selected': square.isSelected
+                }"></div></td>
             </tr>
         </table>
     </div>
@@ -25,9 +27,16 @@
         <table>
             <tr *ngFor="let row of playerBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
-                    'clicked': square[0] === 1
+                    'has-boat': square.hasBoat
                 }"
-                (click) = 'onClickPlayerSquare(i, j)'><div class='hover-layer'>{{square}}</div></td>
+                (click) = 'onClickPlayerSquare(i, j)'
+                (mouseenter) = 'onEnterPlayerSquare(i, j)'
+                (mouseleave) = 'onLeavePlayerSquare(i, j)'
+                (contextmenu)="onRightClick(i, j)">
+                <div [ngClass]="{
+                    'selected': square.isSelected,
+                    'valid': square.isValid
+                }"></div></td>
             </tr>
         </table>
     </div>
