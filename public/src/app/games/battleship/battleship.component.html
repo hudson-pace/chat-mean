@@ -1,21 +1,34 @@
-<div>
-    <table>
-        <tr *ngFor="let row of enemyBoard; index as i">
-            <td *ngFor="let square of row; index as j" [ngClass]="{
-                'enemy-clicked': square[0] === 2
-            }"
-            (click) = 'onClickEnemySquare(i, j)'><div class='hover-layer'><div>{{square}}</div></div></td>
-        </tr>
-    </table>
+<div class="title">battleship</div>
+
+<div *ngIf="phase === Phase.Start">
+    <div>
+        <div>
+            <button>singleplayer</button>
+            <button>multiplayer</button>
+        </div>
+    </div>
 </div>
 
-<div>
-    <table>
-        <tr *ngFor="let row of playerBoard; index as i">
-            <td *ngFor="let square of row; index as j" [ngClass]="{
-                'clicked': square[0] === 1
-            }"
-            (click) = 'onClickPlayerSquare(i, j)'><div class='hover-layer'>{{square}}</div></td>
-        </tr>
-    </table>
+<div *ngIf="phase === Phase.MainGame">
+    <div>
+        <table>
+            <tr *ngFor="let row of enemyBoard; index as i">
+                <td *ngFor="let square of row; index as j" [ngClass]="{
+                    'enemy-clicked': square[0] === 2
+                }"
+                (click) = 'onClickEnemySquare(i, j)'><div class='hover-layer'><div>{{square}}</div></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <table>
+            <tr *ngFor="let row of playerBoard; index as i">
+                <td *ngFor="let square of row; index as j" [ngClass]="{
+                    'clicked': square[0] === 1
+                }"
+                (click) = 'onClickPlayerSquare(i, j)'><div class='hover-layer'>{{square}}</div></td>
+            </tr>
+        </table>
+    </div>
 </div>

@@ -1,16 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 
+enum Phase {
+    Start,
+    Setup,
+    MainGame,
+}
+
 @Component({
   selector: 'app-battleship',
   templateUrl: './battleship.component.html',
   styleUrls: ['./battleship.component.css']
 })
 export class BattleshipComponent implements OnInit {
-
+  Phase = Phase;
   playerBoard: number[][][];
   enemyBoard: number[][][];
   height: number = 8;
   width: number = 8;
+  phase: Phase = Phase.Start;
   
   constructor() {
     this.playerBoard = [];

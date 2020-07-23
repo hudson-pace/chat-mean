@@ -1,3 +1,13 @@
+.title {
+    font-size: 3em;
+    font-weight: bold;
+    margin-top: 1em;
+}
+button {
+    font-size: 2em;
+    margin: 2em;
+}
+
 table {
     background-color: black;
     display: inline-block;
