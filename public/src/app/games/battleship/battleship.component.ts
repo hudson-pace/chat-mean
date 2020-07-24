@@ -4,6 +4,7 @@ enum Phase {
     Start,
     Setup,
     MainGame,
+    End
 }
 enum Mode {
   Singleplayer,
@@ -30,15 +31,27 @@ export class BattleshipComponent implements OnInit {
   height: number = 8;
   width: number = 8;
   phase: Phase = Phase.Start;
-  playerShipLengths: number[] = [4, 3, 2];
-  enemyShipLengths: number[] = [4, 3, 2];
+  lengths: number[] = [4, 3, 2];
+  playerShipLengths: number[];
+  enemyShipLengths: number[];
   playerShips: number[][][] = [];
   enemyShips: number[][][] = [];
-  currentShip: number = this.playerShipLengths.pop();
+  currentShip: number;
   orientation: boolean = false;
   mode: Mode;
+  win: boolean;
   
   constructor() {
+    this.resetGame();
+  }
+
+  resetGame() {
+    this.generateBoards();
+    this.generateShipLengths();
+    this.playerShips = [];
+    this.enemyShips = [];
+  }
+  generateBoards() {
     this.playerBoard = [];
     this.enemyBoard = [];
     for (let i = 0; i < this.height; i++) {
@@ -62,7 +75,15 @@ export class BattleshipComponent implements OnInit {
       }
     }
   }
-
+  generateShipLengths() {
+    this.playerShipLengths = [];
+    this.enemyShipLengths = [];
+    for (let i = 0; i < this.lengths.length; i++) {
+      this.playerShipLengths.push(this.lengths[i]);
+      this.enemyShipLengths.push(this.lengths[i]);
+    }
+    this.currentShip  = this.playerShipLengths.pop();
+  }
   ngOnInit(): void {
   }
   onRightClick(i: number, j: number) {
@@ -226,6 +247,27 @@ export class BattleshipComponent implements OnInit {
         board[boats[boatIndex][i][0]][boats[boatIndex][i][1]].isSunk = true;
       }
       boats.splice(boatIndex, 1);
+      if (boats.length === 0) {
+        if (board === this.enemyBoard) {
+          this.win = true;
+        }
+        else {
+          this.win = false;
+        }
+        this.phase = Phase.End;
+      }
     }
+  }
+
+  onClickRematch() {
+    this.resetGame();
+    if (this.mode === Mode.Singleplayer) {
+      this.onClickSinglePlayer();
+    }
+    this.phase = Phase.Setup;
+  }
+  onClickReturn() {
+    this.resetGame();
+    this.phase = Phase.Start;
   }
 }

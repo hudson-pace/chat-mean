@@ -10,7 +10,7 @@
 </div>
 
 <div *ngIf="phase !== Phase.Start">
-    <div *ngIf="phase === Phase.MainGame">
+    <div *ngIf="phase !== Phase.Setup">
         <table>
             <tr *ngFor="let row of enemyBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
@@ -43,4 +43,11 @@
             </tr>
         </table>
     </div>
+</div>
+
+<div *ngIf="phase === Phase.End" class="game-over">
+    <span *ngIf="win" class="end-message">you win.</span>
+    <span *ngIf="!win" class="end-message">you lose.</span>
+    <button (click)="onClickRematch()">rematch</button>
+    <button (click)="onClickReturn()">return to start</button>
 </div>

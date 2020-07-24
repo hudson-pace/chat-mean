@@ -15,8 +15,8 @@ table {
 }
 
 td {
-    width: 3em;
-    height: 3em;
+    width: 2em;
+    height: 2em;
     background-color: white;
 }
 td.has-boat {
@@ -48,4 +48,22 @@ td.is-hit.has-boat.is-sunk {
 
 .enemy-clicked {
     background-color: yellow;
+}
+
+.game-over {
+    display: inline-block;
+    height: 20em;
+    width: 40em;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -10em;
+    margin-left: -20em;
+    background-color: white;
+}
+
+.end-message {
+    font-size: 3em;
+    margin-top: 1em;
+    display: block;
 }
