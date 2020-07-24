@@ -46,6 +46,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
   orientation: boolean = false;
   mode: Mode;
   win: boolean;
+  isPlayerTurn: boolean = false;
   
   constructor(private chatService: ChatService) {
     this.subscription.add(this.chatService.receiveGameUpdates().subscribe(x => {
@@ -61,6 +62,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
     this.generateShipLengths();
     this.playerShips = [];
     this.enemyShips = [];
+    this.isPlayerTurn = false;
   }
   generateBoards() {
     this.playerBoard = [];
@@ -118,6 +120,9 @@ export class BattleshipComponent implements OnInit, OnDestroy {
         this.onEnterPlayerSquare(x, y);
       }
       else {
+        if (this.mode === Mode.Multiplayer) {
+          this.chatService.send('battleship_ready', null);
+        }
         this.phase = Phase.MainGame;
       }
     }
@@ -133,15 +138,21 @@ export class BattleshipComponent implements OnInit, OnDestroy {
     }
   }
   onClickEnemySquare(i: number, j:number) {
-    if (this.phase === Phase.MainGame && this.mode === Mode.Singleplayer && !this.enemyBoard[i][j].isHit) {
-      this.hitSquare(this.enemyBoard, this.enemyShips, i, j);
-      let x: number = Math.floor(Math.random() * this.height);
-      let y: number = Math.floor(Math.random() * this.width);
-      while (this.playerBoard[x][y].isHit) {
-        x = Math.floor(Math.random() * this.height);
-        y = Math.floor(Math.random() * this.width);
+    if (this.phase === Phase.MainGame && !this.enemyBoard[i][j].isHit) {
+      if (this.mode === Mode.Singleplayer) {
+        this.hitSquare(this.enemyBoard, this.enemyShips, i, j);
+        let x: number = Math.floor(Math.random() * this.height);
+        let y: number = Math.floor(Math.random() * this.width);
+        while (this.playerBoard[x][y].isHit) {
+          x = Math.floor(Math.random() * this.height);
+          y = Math.floor(Math.random() * this.width);
+        }
+        this.hitSquare(this.playerBoard, this.playerShips, x, y);
       }
-      this.hitSquare(this.playerBoard, this.playerShips, x, y);
+      else if (this.isPlayerTurn) {
+        this.chatService.send('battleship_attack', [i, j]);
+        this.isPlayerTurn = false;
+      }
     }
   }
   onClickSinglePlayer() {
@@ -151,6 +162,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
   }
   onClickMultiPlayer() {
     this.phase = Phase.WaitingForMatch;
+    this.mode = Mode.Multiplayer;
     setTimeout(() => {
       this.chatService.send('battleship_join_queue', null);
     }, 500); // wait to avoid flash of queue dialog
@@ -295,6 +307,65 @@ export class BattleshipComponent implements OnInit, OnDestroy {
     switch (message.action) {
       case 'matched':
         this.phase = Phase.Setup;
+        break;
+      case 'start':
+        this.isPlayerTurn = message.data.turn;
+        break;
+      case 'attack':
+        this.isPlayerTurn = true;
+        let coordinates = message.data.coordinates;
+        let square = this.playerBoard[coordinates[0]][coordinates[1]];
+        let boat = this.getBoatFromCoords(coordinates, this.playerShips)
+        this.hitSquare(this.playerBoard, this.playerShips, coordinates[0], coordinates[1]);
+        let response;
+        if (square.isSunk) {
+          response = {
+            status: 'sunk',
+            squares: boat
+          }
+        }
+        else if (square.hasBoat) {
+          response = {
+            status: 'hit',
+            squares: [coordinates]
+          }
+        }
+        else {
+          response = {
+            status: 'miss',
+            squares: [coordinates]
+          }
+        }
+        this.chatService.send('battleship_attack_response', response);
+        break;
+      case 'attack_response':
+        let squares = message.data.response.squares;
+        if (message.data.response.status === 'hit') {
+          this.enemyBoard[squares[0][0]][squares[0][1]].hasBoat = true;
+          this.enemyBoard[squares[0][0]][squares[0][1]].isHit = true;
+        }
+        else if (message.data.response.status === 'miss') {
+          this.enemyBoard[squares[0][0]][squares[0][1]].isHit = true;
+        }
+        else if (message.data.response.status === 'sunk') {
+          for (let i = 0; i < squares.length; i++) {
+            this.enemyBoard[squares[i][0]][squares[i][1]].hasBoat = true;
+            this.enemyBoard[squares[i][0]][squares[i][1]].isHit = true;
+            this.enemyBoard[squares[i][0]][squares[i][1]].isSunk = true;
+          }
+        }
+        break;
     }
+  }
+
+  getBoatFromCoords(coords: number[], boats: number[][][]) {
+    for (let i = 0; i < boats.length; i++) {
+      for (let k = 0; k < boats[i].length; k++) {
+        if (boats[i][k][0] === coords[0] && boats[i][k][1] === coords[1]) {
+          return boats[i];
+        }
+      }
+    }
+    return null;
   }
 }

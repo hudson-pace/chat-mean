@@ -173,11 +173,13 @@ io.on('connection', function(socket) {
 			let game = {
 				game: 'battleship',
 				players: [user_1, user_2],
-				turn: user_1
+				ready: 0,
+				boards: [],
+				turn: undefined
 			}
 			user_1.game = game;
 			user_2.game = game;
-			update = {
+			let update = {
 				game: 'battleship',
 				action: 'matched',
 				data: undefined
@@ -185,6 +187,7 @@ io.on('connection', function(socket) {
 			user_1.queue = undefined;
 			user_2.queue = undefined;
 			socket.to(user_1.id).emit('game', update);
+			socket.to(user_2.id).emit('game', update);
 			socket.emit('game', update);
 		}
 	});
@@ -193,6 +196,44 @@ io.on('connection', function(socket) {
 			user.queue.splice(user.queue.indexOf(user), 1);
 			user.queue = undefined;
 		}
+	});
+	socket.on('battleship_ready', function() {
+		user.game.ready++;
+		if (user.game.ready === 2) {
+			let update = {
+				game: 'battleship',
+				action: 'start',
+				data: {
+					turn: true
+				}
+			}
+			socket.to(user.game.players[0].id).emit('game', update);
+			socket.to(user.game.players[1].id).emit('game', update);
+			update.data.turn = false;
+			socket.emit('game', update);
+		}
+	});
+	socket.on('battleship_attack', function(coordinates) {
+		let update = {
+			game: 'battleship',
+			action: 'attack',
+			data: {
+				coordinates: coordinates
+			}
+		}
+		socket.to(user.game.players[0].id).emit('game', update);
+		socket.to(user.game.players[1].id).emit('game', update);
+	});
+	socket.on('battleship_attack_response', function(response) {
+		let update = {
+			game: 'battleship',
+			action: 'attack_response',
+			data: {
+				response: response
+			}
+		}
+		socket.to(user.game.players[0].id).emit('game', update);
+		socket.to(user.game.players[1].id).emit('game', update);
 	});
 });
 
