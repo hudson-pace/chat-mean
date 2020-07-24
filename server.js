@@ -43,7 +43,8 @@ io.on('connection', function(socket) {
 		current_room: publicRoom,
 		allowed_rooms: [publicRoom],
 		id: socket.id,
-		game: undefined
+		game: undefined,
+		queue: undefined
 	}
 	onlineUsers.push(user);
 	console.log('user connected: ' + user.username);
@@ -59,6 +60,9 @@ io.on('connection', function(socket) {
 
 	socket.on('disconnect', function() {
 		console.log('user disconnected.');
+		if (user.queue) {
+			user.queue.splice(user.queue.indexOf(user), 1);
+		}
 		onlineUsers.splice(onlineUsers.indexOf(user), 1);
 	});
 	
@@ -161,9 +165,9 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('battleship_join_queue', function() {
+		user.queue = battleshipQueue;
 		battleshipQueue.push(user);
 		if (battleshipQueue.length > 1) {
-			console.log('2');
 			let user_1 = battleshipQueue.splice(0, 1)[0];
 			let user_2 = battleshipQueue.splice(0, 1)[0];
 			let game = {
@@ -178,12 +182,16 @@ io.on('connection', function(socket) {
 				action: 'matched',
 				data: undefined
 			}
-			
-			
+			user_1.queue = undefined;
+			user_2.queue = undefined;
 			socket.to(user_1.id).emit('game', update);
 			socket.emit('game', update);
-
-			console.log(battleshipQueue);
+		}
+	});
+	socket.on('battleship_leave_queue', function() {
+		if (user.queue) {
+			user.queue.splice(user.queue.indexOf(user), 1);
+			user.queue = undefined;
 		}
 	});
 });

@@ -1,4 +1,4 @@
-import { Component, OnInit, ɵSWITCH_IVY_ENABLED__POST_R3__ } from '@angular/core';
+import { Component, OnInit, OnDestroy, ɵSWITCH_IVY_ENABLED__POST_R3__ } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 import { GameUpdate } from '../../models/game-update';
@@ -28,7 +28,7 @@ type Square = {
   templateUrl: './battleship.component.html',
   styleUrls: ['./battleship.component.css']
 })
-export class BattleshipComponent implements OnInit {
+export class BattleshipComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   Phase = Phase;
   Mode = Mode;
@@ -96,6 +96,11 @@ export class BattleshipComponent implements OnInit {
     this.currentShip  = this.playerShipLengths.pop();
   }
   ngOnInit(): void {
+  }
+  ngOnDestroy(): void {
+    if (this.phase === Phase.WaitingForMatch) {
+      this.chatService.send('battleship_leave_queue', null);
+    }
   }
   onRightClick(i: number, j: number) {
     this.onLeavePlayerSquare(i, j);
