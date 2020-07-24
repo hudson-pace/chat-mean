@@ -26,6 +26,9 @@ td.is-hit {
     background-color: purple;
 }
 td.is-hit.has-boat {
+    background-color: orange;
+}
+td.is-hit.has-boat.is-sunk {
     background-color: red;
 }
 .enemy {

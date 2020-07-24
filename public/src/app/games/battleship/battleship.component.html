@@ -15,7 +15,8 @@
             <tr *ngFor="let row of enemyBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
                     'has-boat': square.hasBoat && square.isHit,
-                    'is-hit': square.isHit
+                    'is-hit': square.isHit,
+                    'is-sunk': square.isSunk
                 }"
                 (click) = 'onClickEnemySquare(i, j)'>
                 <div class="enemy"></div></td>
@@ -28,7 +29,8 @@
             <tr *ngFor="let row of playerBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
                     'has-boat': square.hasBoat,
-                    'is-hit': square.isHit
+                    'is-hit': square.isHit,
+                    'is-sunk': square.isSunk
                 }"
                 (click) = 'onClickPlayerSquare(i, j)'
                 (mouseenter) = 'onEnterPlayerSquare(i, j)'
