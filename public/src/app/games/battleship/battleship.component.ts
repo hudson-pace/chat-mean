@@ -1,7 +1,12 @@
 import { Component, OnInit, ɵSWITCH_IVY_ENABLED__POST_R3__ } from '@angular/core';
+import { ChatService } from '../../services/chat.service';
+import { Subscription } from 'rxjs';
+import { GameUpdate } from '../../models/game-update';
+import { throwIfEmpty } from 'rxjs/operators';
 
 enum Phase {
     Start,
+    WaitingForMatch,
     Setup,
     MainGame,
     End
@@ -24,6 +29,7 @@ type Square = {
   styleUrls: ['./battleship.component.css']
 })
 export class BattleshipComponent implements OnInit {
+  private subscription: Subscription = new Subscription();
   Phase = Phase;
   Mode = Mode;
   playerBoard: Square[][];
@@ -41,7 +47,12 @@ export class BattleshipComponent implements OnInit {
   mode: Mode;
   win: boolean;
   
-  constructor() {
+  constructor(private chatService: ChatService) {
+    this.subscription.add(this.chatService.receiveGameUpdates().subscribe(x => {
+      if (x.game === 'battleship') {
+        this.respondToServerEvent(x);
+      }
+    }));
     this.resetGame();
   }
 
@@ -134,6 +145,10 @@ export class BattleshipComponent implements OnInit {
     this.mode = Mode.Singleplayer;
   }
   onClickMultiPlayer() {
+    this.phase = Phase.WaitingForMatch;
+    setTimeout(() => {
+      this.chatService.send('battleship_join_queue', null);
+    }, 500); // wait to avoid flash of queue dialog
   }
 
   changeSquares(board: Square[][], x: number, y: number, size: number, orientation: boolean, selecting: boolean) {
@@ -269,5 +284,12 @@ export class BattleshipComponent implements OnInit {
   onClickReturn() {
     this.resetGame();
     this.phase = Phase.Start;
+  }
+
+  respondToServerEvent(message: GameUpdate) {
+    switch (message.action) {
+      case 'matched':
+        this.phase = Phase.Setup;
+    }
   }
 }

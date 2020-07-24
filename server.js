@@ -33,6 +33,7 @@ var publicRoom = {
 	id: 'public',
 	members: {}
 }
+var battleshipQueue = [];
 chatrooms.push(publicRoom);
 
 io.on('connection', function(socket) {
@@ -41,7 +42,8 @@ io.on('connection', function(socket) {
 		username: 'anon_' + nameCounter,
 		current_room: publicRoom,
 		allowed_rooms: [publicRoom],
-		id: socket.id
+		id: socket.id,
+		game: undefined
 	}
 	onlineUsers.push(user);
 	console.log('user connected: ' + user.username);
@@ -156,6 +158,33 @@ io.on('connection', function(socket) {
 			from: 'server'
 		}
 		socket.emit('notice', msg);
+	});
+
+	socket.on('battleship_join_queue', function() {
+		battleshipQueue.push(user);
+		if (battleshipQueue.length > 1) {
+			console.log('2');
+			let user_1 = battleshipQueue.splice(0, 1)[0];
+			let user_2 = battleshipQueue.splice(0, 1)[0];
+			let game = {
+				game: 'battleship',
+				players: [user_1, user_2],
+				turn: user_1
+			}
+			user_1.game = game;
+			user_2.game = game;
+			update = {
+				game: 'battleship',
+				action: 'matched',
+				data: undefined
+			}
+			
+			
+			socket.to(user_1.id).emit('game', update);
+			socket.emit('game', update);
+
+			console.log(battleshipQueue);
+		}
 	});
 });
 

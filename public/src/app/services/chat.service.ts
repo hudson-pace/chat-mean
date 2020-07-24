@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { ChatMessage } from '../models/chat-message';
+import { GameUpdate } from '../models/game-update';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Injectable({
@@ -29,5 +30,8 @@ export class ChatService {
     }
     receiveNotices() {
         return this.socket.fromEvent<ChatMessage>('notice');
+    }
+    receiveGameUpdates() {
+        return this.socket.fromEvent<GameUpdate>('game');
     }
 }
