@@ -12,12 +12,15 @@ table {
     background-color: black;
     display: inline-block;
     margin-top: 1em;
+    border-spacing: 0;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5), 0 5px 5px 0 rgba(0, 0, 0, 0.4);
 }
 
 td {
     width: 2em;
     height: 2em;
     background-color: white;
+    border: 1px solid black;
 }
 td.has-boat {
     background-color: blue;
