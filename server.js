@@ -200,6 +200,7 @@ io.on('connection', function(socket) {
 	socket.on('battleship_ready', function() {
 		user.game.ready++;
 		if (user.game.ready === 2) {
+			user.game.ready = 0;
 			let update = {
 				game: 'battleship',
 				action: 'start',
@@ -231,6 +232,15 @@ io.on('connection', function(socket) {
 			data: {
 				response: response
 			}
+		}
+		socket.to(user.game.players[0].id).emit('game', update);
+		socket.to(user.game.players[1].id).emit('game', update);
+	});
+	socket.on('battleship_lost', function() {
+		let update = {
+			game: 'battleship',
+			action: 'won',
+			data: {}
 		}
 		socket.to(user.game.players[0].id).emit('game', update);
 		socket.to(user.game.players[1].id).emit('game', update);

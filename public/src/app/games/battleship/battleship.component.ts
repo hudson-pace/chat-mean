@@ -285,6 +285,9 @@ export class BattleshipComponent implements OnInit, OnDestroy {
         }
         else {
           this.win = false;
+          if (this.mode === Mode.Multiplayer) {
+            this.chatService.send('battleship_lost', null);
+          }
         }
         this.phase = Phase.End;
       }
@@ -355,6 +358,9 @@ export class BattleshipComponent implements OnInit, OnDestroy {
           }
         }
         break;
+      case 'won':
+        this.win = true;
+        this.phase = Phase.End;
     }
   }
 
