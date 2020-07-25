@@ -11,6 +11,7 @@ var errorHandler = require('./middleware/error-handler');
 var { secret } = require('./config/database');
 const { nextTick } = require('process');
 var db = require('./helpers/db');
+var updateBattleship = require('./games/battleship');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -44,7 +45,8 @@ io.on('connection', function(socket) {
 		allowed_rooms: [publicRoom],
 		id: socket.id,
 		game: undefined,
-		queue: undefined
+		queue: undefined,
+		opponent: undefined,
 	}
 	onlineUsers.push(user);
 	console.log('user connected: ' + user.username);
@@ -164,86 +166,12 @@ io.on('connection', function(socket) {
 		socket.emit('notice', msg);
 	});
 
-	socket.on('battleship_join_queue', function() {
-		user.queue = battleshipQueue;
-		battleshipQueue.push(user);
-		if (battleshipQueue.length > 1) {
-			let user_1 = battleshipQueue.splice(0, 1)[0];
-			let user_2 = battleshipQueue.splice(0, 1)[0];
-			let game = {
-				game: 'battleship',
-				players: [user_1, user_2],
-				ready: 0,
-				boards: [],
-				turn: undefined
-			}
-			user_1.game = game;
-			user_2.game = game;
-			let update = {
-				game: 'battleship',
-				action: 'matched',
-				data: undefined
-			}
-			user_1.queue = undefined;
-			user_2.queue = undefined;
-			socket.to(user_1.id).emit('game', update);
-			socket.to(user_2.id).emit('game', update);
-			socket.emit('game', update);
+	socket.on('game', function(update) {
+		switch(update.game) {
+			case 'battleship':
+				updateBattleship(update, user, io);
+				break;
 		}
-	});
-	socket.on('battleship_leave_queue', function() {
-		if (user.queue) {
-			user.queue.splice(user.queue.indexOf(user), 1);
-			user.queue = undefined;
-		}
-	});
-	socket.on('battleship_ready', function() {
-		user.game.ready++;
-		if (user.game.ready === 2) {
-			user.game.ready = 0;
-			let update = {
-				game: 'battleship',
-				action: 'start',
-				data: {
-					turn: true
-				}
-			}
-			socket.to(user.game.players[0].id).emit('game', update);
-			socket.to(user.game.players[1].id).emit('game', update);
-			update.data.turn = false;
-			socket.emit('game', update);
-		}
-	});
-	socket.on('battleship_attack', function(coordinates) {
-		let update = {
-			game: 'battleship',
-			action: 'attack',
-			data: {
-				coordinates: coordinates
-			}
-		}
-		socket.to(user.game.players[0].id).emit('game', update);
-		socket.to(user.game.players[1].id).emit('game', update);
-	});
-	socket.on('battleship_attack_response', function(response) {
-		let update = {
-			game: 'battleship',
-			action: 'attack_response',
-			data: {
-				response: response
-			}
-		}
-		socket.to(user.game.players[0].id).emit('game', update);
-		socket.to(user.game.players[1].id).emit('game', update);
-	});
-	socket.on('battleship_lost', function() {
-		let update = {
-			game: 'battleship',
-			action: 'won',
-			data: {}
-		}
-		socket.to(user.game.players[0].id).emit('game', update);
-		socket.to(user.game.players[1].id).emit('game', update);
 	});
 });
 

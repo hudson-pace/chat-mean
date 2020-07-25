@@ -101,7 +101,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (this.phase === Phase.WaitingForMatch) {
-      this.chatService.send('battleship_leave_queue', null);
+      this.sendUpdate('leave_queue', null);
     }
   }
   onRightClick(i: number, j: number) {
@@ -121,7 +121,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
       }
       else {
         if (this.mode === Mode.Multiplayer) {
-          this.chatService.send('battleship_ready', null);
+          this.sendUpdate('ready', null);
         }
         this.phase = Phase.MainGame;
       }
@@ -150,7 +150,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
         this.hitSquare(this.playerBoard, this.playerShips, x, y);
       }
       else if (this.isPlayerTurn) {
-        this.chatService.send('battleship_attack', [i, j]);
+        this.sendUpdate('attack', { coordinates: [i, j] });
         this.isPlayerTurn = false;
       }
     }
@@ -164,7 +164,12 @@ export class BattleshipComponent implements OnInit, OnDestroy {
     this.phase = Phase.WaitingForMatch;
     this.mode = Mode.Multiplayer;
     setTimeout(() => {
-      this.chatService.send('battleship_join_queue', null);
+      let update = {
+        game: 'battleship',
+        action: 'join_queue',
+        data: undefined
+      }
+      this.sendUpdate('join_queue', null);
     }, 500); // wait to avoid flash of queue dialog
   }
 
@@ -286,7 +291,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
         else {
           this.win = false;
           if (this.mode === Mode.Multiplayer) {
-            this.chatService.send('battleship_lost', null);
+            this.sendUpdate('game_over', null);
           }
         }
         this.phase = Phase.End;
@@ -320,37 +325,37 @@ export class BattleshipComponent implements OnInit, OnDestroy {
         let square = this.playerBoard[coordinates[0]][coordinates[1]];
         let boat = this.getBoatFromCoords(coordinates, this.playerShips)
         this.hitSquare(this.playerBoard, this.playerShips, coordinates[0], coordinates[1]);
-        let response;
+        let data;
         if (square.isSunk) {
-          response = {
+          data = {
             status: 'sunk',
             squares: boat
           }
         }
         else if (square.hasBoat) {
-          response = {
+          data = {
             status: 'hit',
             squares: [coordinates]
           }
         }
         else {
-          response = {
+          data = {
             status: 'miss',
             squares: [coordinates]
           }
         }
-        this.chatService.send('battleship_attack_response', response);
+        this.sendUpdate('attack_response', data)
         break;
       case 'attack_response':
-        let squares = message.data.response.squares;
-        if (message.data.response.status === 'hit') {
+        let squares = message.data.squares;
+        if (message.data.status === 'hit') {
           this.enemyBoard[squares[0][0]][squares[0][1]].hasBoat = true;
           this.enemyBoard[squares[0][0]][squares[0][1]].isHit = true;
         }
-        else if (message.data.response.status === 'miss') {
+        else if (message.data.status === 'miss') {
           this.enemyBoard[squares[0][0]][squares[0][1]].isHit = true;
         }
-        else if (message.data.response.status === 'sunk') {
+        else if (message.data.status === 'sunk') {
           for (let i = 0; i < squares.length; i++) {
             this.enemyBoard[squares[i][0]][squares[i][1]].hasBoat = true;
             this.enemyBoard[squares[i][0]][squares[i][1]].isHit = true;
@@ -358,7 +363,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
           }
         }
         break;
-      case 'won':
+      case 'game_over':
         this.win = true;
         this.phase = Phase.End;
     }
@@ -373,5 +378,14 @@ export class BattleshipComponent implements OnInit, OnDestroy {
       }
     }
     return null;
+  }
+
+  sendUpdate(action: string, data: any) {
+    let update = {
+      game: 'battleship',
+      action: action,
+      data: data
+    }
+    this.chatService.send('game', update);
   }
 }
