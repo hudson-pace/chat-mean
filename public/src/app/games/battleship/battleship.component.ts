@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, ɵSWITCH_IVY_ENABLED__POST_R3__ } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 import { GameUpdate } from '../../models/game-update';
-import { throwIfEmpty } from 'rxjs/operators';
 
 enum Phase {
     Start,
@@ -28,25 +27,24 @@ type Square = {
   templateUrl: './battleship.component.html',
   styleUrls: ['./battleship.component.css']
 })
-export class BattleshipComponent implements OnInit, OnDestroy {
-  private subscription: Subscription = new Subscription();
+export class BattleshipComponent implements OnDestroy {
   Phase = Phase;
-  Mode = Mode;
-  playerBoard: Square[][];
-  enemyBoard: Square[][];
-  height: number = 8;
-  width: number = 8;
   phase: Phase = Phase.Start;
-  lengths: number[] = [4, 3, 2];
-  playerShipLengths: number[];
-  enemyShipLengths: number[];
-  playerShips: number[][][] = [];
-  enemyShips: number[][][] = [];
-  currentShip: number;
-  orientation: boolean = false;
-  mode: Mode;
   win: boolean;
-  isPlayerTurn: boolean = false;
+  private subscription: Subscription = new Subscription();
+  private playerBoard: Square[][];
+  private enemyBoard: Square[][];
+  private height: number = 8;
+  private width: number = 8;
+  private lengths: number[] = [4, 3, 2];
+  private playerShipLengths: number[];
+  private enemyShipLengths: number[];
+  private playerShips: number[][][] = [];
+  private enemyShips: number[][][] = [];
+  private currentShip: number;
+  private orientation: boolean = false;
+  private mode: Mode;
+  private isPlayerTurn: boolean = false;
   
   constructor(private chatService: ChatService) {
     this.subscription.add(this.chatService.receiveGameUpdates().subscribe(x => {
@@ -64,6 +62,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
     this.enemyShips = [];
     this.isPlayerTurn = false;
   }
+
   generateBoards() {
     this.playerBoard = [];
     this.enemyBoard = [];
@@ -88,6 +87,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   generateShipLengths() {
     this.playerShipLengths = [];
     this.enemyShipLengths = [];
@@ -97,13 +97,13 @@ export class BattleshipComponent implements OnInit, OnDestroy {
     }
     this.currentShip  = this.playerShipLengths.pop();
   }
-  ngOnInit(): void {
-  }
+
   ngOnDestroy(): void {
     if (this.phase === Phase.WaitingForMatch) {
       this.sendUpdate('leave_queue', null);
     }
   }
+
   onRightClick(i: number, j: number) {
     this.onLeavePlayerSquare(i, j);
     this.orientation = !this.orientation;
@@ -127,16 +127,19 @@ export class BattleshipComponent implements OnInit, OnDestroy {
       }
     }
   }
+  
   onEnterPlayerSquare(x: number, y: number) {
     if (this.phase === Phase.Setup) {
       this.changeSquares(this.playerBoard, x, y, this.currentShip, this.orientation, true);
     }
   }
+
   onLeavePlayerSquare(x: number, y: number) {
     if (this.phase === Phase.Setup) {
       this.changeSquares(this.playerBoard, x, y, this.currentShip, this.orientation, false);
     }
   }
+
   onClickEnemySquare(i: number, j:number) {
     if (this.phase === Phase.MainGame && !this.enemyBoard[i][j].isHit) {
       if (this.mode === Mode.Singleplayer) {
@@ -155,11 +158,13 @@ export class BattleshipComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   onClickSinglePlayer() {
     this.placeEnemyBoats();
     this.phase = Phase.Setup;
     this.mode = Mode.Singleplayer;
   }
+
   onClickMultiPlayer() {
     this.phase = Phase.WaitingForMatch;
     this.mode = Mode.Multiplayer;
@@ -271,6 +276,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   tryToSinkBoat(board: Square[][], boats: number[][][], boatIndex: number) {
     let sunk: boolean = true;
     for (let i = 0; i < boats[boatIndex].length; i++) {
@@ -306,6 +312,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
     }
     this.phase = Phase.Setup;
   }
+  
   onClickReturn() {
     this.resetGame();
     this.phase = Phase.Start;
@@ -366,6 +373,7 @@ export class BattleshipComponent implements OnInit, OnDestroy {
       case 'game_over':
         this.win = true;
         this.phase = Phase.End;
+        break;
     }
   }
 
