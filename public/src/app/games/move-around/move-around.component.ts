@@ -46,9 +46,6 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
     this.gameCanvas.nativeElement.width = this.gameCanvas.nativeElement.clientWidth;
     this.gameCanvas.nativeElement.height = this.gameCanvas.nativeElement.clientHeight;
     this.context = this.gameCanvas.nativeElement.getContext('2d');
-    this.context.moveTo(0, 0);
-    this.context.lineTo(300, 200);
-    this.context.stroke();
 
     setInterval(this.update.bind(this), 10);
   }

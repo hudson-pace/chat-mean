@@ -25,6 +25,9 @@ function updateMoveAround(update, user, io) {
             user.socket.to(room.id).emit('game', response);
             break;
         case 'join':
+            user.game = {
+                game: 'move-around'
+            }
             user.socket.join(room.id);
             response = {
                 game: 'move-around',
@@ -52,6 +55,7 @@ function updateMoveAround(update, user, io) {
 }
 
 function leaveGame(user) {
+    user.game = undefined;
     user.socket.leave(room.id);
     let index;
     for (let i = 0; i < players.length; i++) {
