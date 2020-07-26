@@ -137,6 +137,14 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
         break;
     }
   }
+  onBlur() {
+    this.pressedKeys.a = false;
+    this.pressedKeys.d = false;
+    this.pressedKeys.w = false;
+    this.pressedKeys.s = false;
+    this.dx = 0;
+    this.dy = 0;
+  }
 
   respondToServerEvent(update: GameUpdate) {
     switch (update.action) {
