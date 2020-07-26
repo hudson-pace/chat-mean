@@ -1,4 +1,4 @@
-module.exports = { updateBattleship, disconnectBattleship };
+module.exports = updateBattleship;
 
 var battleshipQueue = [];
 function updateBattleship(update, user, io) {
@@ -11,7 +11,8 @@ function updateBattleship(update, user, io) {
             }
             break;
         case 'leave':
-            disconnectBattleship(user, io);
+            leaveQueue(user);
+            leaveGame(user, io);
             break;
         case 'ready':
             setUserIsReady(user, io);
@@ -24,11 +25,6 @@ function updateBattleship(update, user, io) {
         
         
     }
-}
-
-function disconnectBattleship(user, io) {
-    leaveQueue(user);
-    leaveGame(user, io);
 }
 
 function leaveQueue(user) {

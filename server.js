@@ -11,8 +11,8 @@ var errorHandler = require('./middleware/error-handler');
 var { secret } = require('./config/database');
 const { nextTick, disconnect } = require('process');
 var db = require('./helpers/db');
-const { updateBattleship, disconnectBattleship } = require('./games/battleship');
-const { updateMoveAround, disconnectMoveAround } = require('./games/move-around');
+const updateBattleship = require('./games/battleship');
+const updateMoveAround = require('./games/move-around');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -65,12 +65,17 @@ io.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		console.log('user disconnected.');
 		if (user.game) {
+			let update = {
+				game: undefined,
+				action: 'leave',
+				data: undefined
+			}
 			switch (user.game.game) {
 				case 'battleship':
-					disconnectBattleship(user, io);
+					updateBattleship(update, user, io);
 					break;
 				case 'move-around':
-					disconnectMoveAround(user, io);
+					updateMoveAround(update, user, io);
 					break;
 			}
 		}

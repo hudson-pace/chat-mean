@@ -1,4 +1,4 @@
-module.exports = { updateMoveAround, disconnectMoveAround };
+module.exports = updateMoveAround;
 
 const room = {
     id: 'move-around'
@@ -67,7 +67,4 @@ function leaveGame(user) {
         data: user.username
     }
     user.socket.to(room.id).emit('game', update);
-}
-function disconnectMoveAround(user, io) {
-    leaveGame(user);
 }
