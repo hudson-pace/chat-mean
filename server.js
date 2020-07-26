@@ -12,6 +12,7 @@ var { secret } = require('./config/database');
 const { nextTick } = require('process');
 var db = require('./helpers/db');
 var updateBattleship = require('./games/battleship');
+const updateMoveAround = require('./games/move-around');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -44,6 +45,7 @@ io.on('connection', function(socket) {
 		current_room: publicRoom,
 		allowed_rooms: [publicRoom],
 		id: socket.id,
+		socket: socket,
 		game: undefined,
 		queue: undefined,
 		opponent: undefined,
@@ -170,6 +172,9 @@ io.on('connection', function(socket) {
 		switch(update.game) {
 			case 'battleship':
 				updateBattleship(update, user, io);
+				break;
+			case 'move-around':
+				updateMoveAround(update, user, io);
 				break;
 		}
 	});
