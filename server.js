@@ -9,10 +9,10 @@ var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var errorHandler = require('./middleware/error-handler');
 var { secret } = require('./config/database');
-const { nextTick } = require('process');
+const { nextTick, disconnect } = require('process');
 var db = require('./helpers/db');
-var updateBattleship = require('./games/battleship');
-const updateMoveAround = require('./games/move-around');
+const { updateBattleship, disconnectBattleship } = require('./games/battleship');
+const { updateMoveAround, disconnectMoveAround } = require('./games/move-around');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -64,10 +64,16 @@ io.on('connection', function(socket) {
 
 	socket.on('disconnect', function() {
 		console.log('user disconnected.');
-		if (user.queue) {
-			user.queue.splice(user.queue.indexOf(user), 1);
+		if (user.game) {
+			switch (user.game.game) {
+				case 'battleship':
+					disconnectBattleship(user, io);
+					break;
+				case 'move-around':
+					disconnectMoveAround(user, io);
+					break;
+			}
 		}
-		onlineUsers.splice(onlineUsers.indexOf(user), 1);
 	});
 	
 	socket.on('authenticate', function(token) {

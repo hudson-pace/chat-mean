@@ -99,9 +99,7 @@ export class BattleshipComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.phase === Phase.WaitingForMatch) {
-      this.sendUpdate('leave_queue', null);
-    }
+    this.sendUpdate('leave', null);
   }
 
   onRightClick(i: number, j: number) {
@@ -373,6 +371,10 @@ export class BattleshipComponent implements OnDestroy {
       case 'game_over':
         this.win = true;
         this.phase = Phase.End;
+        break;
+      case 'disconnected':
+        this.resetGame();
+        this.phase = Phase.Start;
         break;
     }
   }

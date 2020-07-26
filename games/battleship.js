@@ -1,4 +1,4 @@
-module.exports = updateBattleship;
+module.exports = { updateBattleship, disconnectBattleship };
 
 var battleshipQueue = [];
 function updateBattleship(update, user, io) {
@@ -10,11 +10,8 @@ function updateBattleship(update, user, io) {
                 createGame(battleshipQueue.splice(0, 1)[0], battleshipQueue.splice(0, 1)[0], io);
             }
             break;
-        case 'leave_queue':
-            if (user.queue) {
-                user.queue.splice(user.queue.indexOf(user), 1);
-                user.queue = undefined;
-            }
+        case 'leave':
+            disconnectBattleship(user, io);
             break;
         case 'ready':
             setUserIsReady(user, io);
@@ -26,6 +23,18 @@ function updateBattleship(update, user, io) {
             break;
         
         
+    }
+}
+
+function disconnectBattleship(user, io) {
+    leaveQueue(user);
+    leaveGame(user, io);
+}
+
+function leaveQueue(user) {
+    if (user.queue) {
+        user.queue.splice(user.queue.indexOf(user), 1);
+        user.queue = undefined;
     }
 }
 
@@ -49,6 +58,21 @@ function createGame(user_1, user_2, io) {
     }
     io.to(user_1.id).emit('game', response);
     io.to(user_2.id).emit('game', response);
+}
+
+function leaveGame(user, io) {
+    if (user.game) {
+        let update = {
+            game: 'battleship',
+            action: 'disconnected',
+            data: undefined
+        }
+        io.to(user.opponent.id).emit('game', update);
+        user.opponent.opponent = undefined;
+        user.opponent.game = undefined;
+        user.opponent = undefined;
+        user.game = undefined;
+    }
 }
 
 function setUserIsReady(user, io) {
