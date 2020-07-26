@@ -79,14 +79,20 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
   }
   draw() {
     this.context.clearRect(0, 0, this.gameCanvas.nativeElement.width, this.gameCanvas.nativeElement.height);
-    this.context.beginPath();
-    this.context.arc(this.x, this.y, 10, 0, Math.PI*2);
     for (let i = 0; i < this.players.length; i++) {
+      this.context.fillStyle = "#DD9500"
+      this.context.beginPath();
       this.context.arc(this.players[i].x, this.players[i].y, 10, 0, Math.PI*2);
+      this.context.fill();
+      this.context.closePath();
     }
     this.context.fillStyle = "#0095DD";
+    this.context.beginPath();
+    this.context.arc(this.x, this.y, 10, 0, Math.PI*2);
     this.context.fill();
     this.context.closePath();
+    
+
   }
 
   onKeyDown(event: any) {
