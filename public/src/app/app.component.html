@@ -1,25 +1,35 @@
 <nav>
-  <ul>
-    <li *ngIf="user">{{user.username}}</li>
-    <li *ngIf="!user">-</li>
-    <a routerLink="/"><li [ngClass]="{
-      'active': this.router.url === '/'
-    }"
-    >Home</li></a>
-    <a routerLink="/login"><li [ngClass]="{
-      'active': this.router.url === '/login'
-    }"
-    *ngIf="!user">Login</li></a>
-    <a routerLink="/register"><li [ngClass]="{
-      'active': this.router.url === '/register'
-    }"
-    *ngIf="!user">Register</li></a>
-    <a (click)="logout()"><li *ngIf="user">Logout</li></a>
-    <a routerLink="/games/battleship"><li [ngClass]="{
-      'active': this.router.url === '/games/battleship'
-    }"
-    >Battleship</li></a>
-  </ul>
+  <a *ngIf="user">{{user.username}}</a>
+  <a *ngIf="!user">-</a>
+  <a routerLink = "/" [ngClass]="{
+    'active': this.router.url === '/'
+  }"
+  >Home</a>
+  <a routerLink="/login" [ngClass]="{
+    'active': this.router.url === '/login'
+  }"
+  *ngIf="!user">Login</a>
+  <a routerLink="/register" [ngClass]="{
+    'active': this.router.url === '/register'
+  }"
+  *ngIf="!user">Register</a>
+  <a (click)="logout" *ngIf="user">Logout</a>
+  <div class="dropdown-container">
+    <a [ngClass]="{
+      'active': this.router.url === '/games/battleship' ||
+      this.router.url === '/games/move-around'
+    }">Games</a>
+    <div class="dropdown-content">
+      <a routerLink="/games/battleship" [ngClass]="{
+        'active': this.router.url === '/games/battleship'
+      }"
+      >Battleship</a>
+      <a routerLink="/games/move-around" [ngClass]="{
+        'active': this.router.url === '/games/move-around'
+      }"
+      >Move-Around</a>
+    </div>
+  </div>
 </nav>
 <div>
   <router-outlet></router-outlet>
