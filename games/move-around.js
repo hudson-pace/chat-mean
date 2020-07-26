@@ -1,4 +1,4 @@
-module.exports = updateMoveAround;
+module.exports = { updateMoveAround, disconnectMoveAround };
 
 const room = {
     id: 'move-around'
@@ -46,15 +46,28 @@ function updateMoveAround(update, user, io) {
             user.socket.to(room.id).emit('game', response);
             break;
         case 'leave':
-            user.socket.leave(room.id);
-            let index;
-            for (let i = 0; i < players.length; i++) {
-                if (players[i].name === user.username) {
-                    index = i;
-                    break;
-                }
-            }
-            players.splice(index, 1);
+            leaveGame(user);
             break;
     }
+}
+
+function leaveGame(user) {
+    user.socket.leave(room.id);
+    let index;
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].name === user.username) {
+            index = i;
+            break;
+        }
+    }
+    players.splice(index, 1);
+    let update = {
+        game: 'move-around',
+        action: 'player-disconnected',
+        data: user.username
+    }
+    user.socket.to(room.id).emit('game', update);
+}
+function disconnectMoveAround(user, io) {
+    leaveGame(user);
 }

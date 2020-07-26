@@ -162,8 +162,16 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
         break;
       case 'new-player':
         this.players.push(update.data);
-        console.log('new player');
         break;
+      case 'player-disconnected':
+        let index;
+        for (let i = 0; i < this.players.length; i++) {
+          if (this.players[i].name === update.data) {
+            index = i;
+            break;
+          }
+        }
+        this.players.splice(index, 1);
     }
   }
   sendUpdate(action: string, data: any) {
