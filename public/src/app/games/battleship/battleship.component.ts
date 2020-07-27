@@ -312,6 +312,7 @@ export class BattleshipComponent implements OnDestroy {
   }
   
   onClickReturn() {
+    this.sendUpdate('leave', null);
     this.resetGame();
     this.phase = Phase.Start;
   }

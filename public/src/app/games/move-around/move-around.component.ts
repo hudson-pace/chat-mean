@@ -19,10 +19,10 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
   private dy: number = 0;
   private players: any[] = [];
   private pressedKeys = {
-    w: false,
-    a: false,
-    s: false,
-    d: false
+    key65: false,
+    key68: false,
+    key83: false,
+    key87: false
   }
 
 
@@ -51,6 +51,20 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
   }
 
   update() {
+    this.dx = 0;
+    this.dy = 0;
+    if (this.pressedKeys.key65) {
+      this.dx -= 3;
+    }
+    if (this.pressedKeys.key68) {
+      this.dx += 3;
+    }
+    if (this.pressedKeys.key87) {
+      this.dy -= 3;
+    }
+    if (this.pressedKeys.key83) {
+      this.dy += 3;
+    }
     if (this.dx !== 0 || this.dy !== 0) {
       let oldX = this.x;
       let oldY = this.y;
@@ -93,58 +107,22 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
   }
 
   onKeyDown(event: any) {
-    switch (event.keyCode) {
-      case 65:
-        if (!this.pressedKeys.a) {
-          this.pressedKeys.a = true;
-          this.dx -= 3;
-        }
-        break;
-      case 68:
-        if (!this.pressedKeys.d) {
-          this.pressedKeys.d = true;
-          this.dx += 3;
-        }
-        break;
-      case 87:
-        if (!this.pressedKeys.w) {
-          this.pressedKeys.w = true;
-          this.dy -= 3;
-        }
-        break;
-      case 83:
-        if (!this.pressedKeys.s) {
-          this.pressedKeys.s = true;
-          this.dy += 3;
-        }
-        break;
+    if (this.pressedKeys['key' + event.keyCode] !== undefined) {
+      this.pressedKeys['key' + event.keyCode] = true;
     }
   }
   onKeyUp(event: any) {
-    switch (event.keyCode) {
-      case 65:
-        this.pressedKeys.a = false;
-        this.dx += 3;
-        break;
-      case 68:
-        this.pressedKeys.d = false;
-        this.dx -= 3;
-        break;
-      case 87:
-        this.pressedKeys.w = false;
-        this.dy += 3;
-        break;
-      case 83:
-        this.pressedKeys.s = false;
-        this.dy -= 3;
-        break;
+    console.log('up' + 'key' + event.keyCode);
+    if (this.pressedKeys['key' + event.keyCode] !== undefined) {
+      console.log('ok');
+      this.pressedKeys['key' + event.keyCode] = false;
     }
   }
   onBlur() {
-    this.pressedKeys.a = false;
-    this.pressedKeys.d = false;
-    this.pressedKeys.w = false;
-    this.pressedKeys.s = false;
+    this.pressedKeys.key65 = false;
+    this.pressedKeys.key68 = false;
+    this.pressedKeys.key83 = false;
+    this.pressedKeys.key87 = false;
     this.dx = 0;
     this.dy = 0;
   }
