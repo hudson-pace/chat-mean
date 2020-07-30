@@ -11,11 +11,13 @@ var role = require('../helpers/role');
 module.exports = {
     authenticate,
     register,
+    deleteUser,
     refreshToken,
     revokeToken,
     getAll,
     getById,
-    getRefreshTokens
+    getRefreshTokens,
+    getUserByName
 };
 
 async function authenticate({ username, password, ipAddress}) {
@@ -38,21 +40,14 @@ async function authenticate({ username, password, ipAddress}) {
 }
 
 async function register(userParams, ipAddress) {
-    console.log(userParams);
-    console.log('0');
     if (await User.findOne({ username: userParams.username })) {
         throw 'username is taken';
     }
-    console.log('0.5');
     var user = new User();
     user.username = userParams.username;
-    console.log('.75');
     user.passwordHash = bcrypt.hashSync(userParams.password, 10);
-    console.log('.8');
     user.role = role.User;
-    console.log('1');
     await user.save();
-    console.log('2');
 
     var jwtToken = generateJwtToken(user);
     var refreshToken = generateRefreshToken(user, ipAddress);
@@ -63,6 +58,19 @@ async function register(userParams, ipAddress) {
         jwtToken,
         refreshToken: refreshToken.token
     };
+}
+
+async function deleteUser(id) {
+    let success = false;
+    let result = await db.User.deleteOne({_id: id});
+    if (result.deletedCount > 0) {
+        success = true;
+    }
+    return {
+        success: {
+            success: success
+        }
+    }
 }
 
 async function refreshToken({ token, ipAddress}) {
@@ -116,6 +124,14 @@ async function getUser(id) {
         throw 'User not found';
     }
     var user = await db.User.findById(id);
+    if (!user) {
+        throw 'User not found';
+    }
+    return user;
+}
+
+async function getUserByName(name) {
+    let user = await db.User.findOne({ username: name });
     if (!user) {
         throw 'User not found';
     }

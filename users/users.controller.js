@@ -11,9 +11,10 @@ router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
+router.delete('/:username', authorize(), deleteUser);
 router.get('/', authorize(Role.Admin), getAll);
-router.get('/:id', authorize(), getById);
-router.get('/:id/refresh-tokens', authorize(), getRefreshTokens);
+router.get('/:username', getByName);
+router.get('/:username/refresh-tokens', authorize(), getRefreshTokens);
 
 module.exports = router;
 
@@ -52,6 +53,21 @@ function register(req, res, next) {
             setTokenCookie(res, refreshToken);
             res.json(user);
         })
+        .catch(next);
+}
+
+function deleteUser(req, res, next) {
+    userService.getUserByName(req.params.username)
+        .then(user => {
+            if (String(user._id) !== req.user.id && req.user.role !== Role.Admin) {
+                return res.status(401).json({message: 'Unauthorized'});
+            }
+            userService.deleteUser(user.id)
+                .then(({ success }) => {
+                    res.json(success);
+                })
+                .catch(next);
+                })
         .catch(next);
 }
 
@@ -94,12 +110,10 @@ function getAll(req, res, next) {
         .catch(next);
 }
 
-function getById(req, res, next) {
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
-        return res.status(401).json({message: 'Unauthorized'});
-    }
-    userService.getById(req.params.id)
-        .then(user => user ? res.json(user) : res.sendStatus(404))
+function getByName(req, res, next) {
+    console.log('here');
+    userService.getUserByName(req.params.username)
+        .then(user => user ? res.json({ username: user.username, role: user.role }) : res.sendStatus(404))
         .catch(next);
 }
 
