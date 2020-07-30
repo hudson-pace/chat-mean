@@ -112,9 +112,7 @@ export class MoveAroundComponent implements OnInit, AfterViewInit {
     }
   }
   onKeyUp(event: any) {
-    console.log('up' + 'key' + event.keyCode);
     if (this.pressedKeys['key' + event.keyCode] !== undefined) {
-      console.log('ok');
       this.pressedKeys['key' + event.keyCode] = false;
     }
   }

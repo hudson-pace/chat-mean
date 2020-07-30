@@ -5,12 +5,13 @@ nav {
     text-align: left;
 }
 a {
-    padding: 2em;
     cursor: pointer;
     list-style: none;
     text-decoration: none;
     display: inline-block;
     color: black;
+    padding: 3vh 2vw;
+    outline: none;
 }
 a:hover {
     background-color: #e2e2e2;
