@@ -16,7 +16,7 @@ export class ChatComponent implements OnInit {
   username = '';
   message = '';
   constructor(private chatService: ChatService, private authenticationService: AuthenticationService) {
-    this.subscription.add(this.authenticationService.user.subscribe(x => {
+    this.subscription.add(this.authenticationService.getUserSubject().subscribe(x => {
       if (x) {
         this.username = x.username;
       }

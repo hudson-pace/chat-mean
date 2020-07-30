@@ -10,18 +10,16 @@ import { User } from '../models/user';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
     private userSubject: BehaviorSubject<User>;
-    public user: Observable<User>;
 
     constructor(
         private router: Router,
         private http: HttpClient
     ) {
         this.userSubject = new BehaviorSubject<User>(null);
-        this.user = this.userSubject.asObservable();
     }
 
-    public get userValue(): User {
-        return this.userSubject.value;
+    public getUserSubject(): BehaviorSubject<User> {
+        return this.userSubject;
     }
 
     login(username: string, password: string) {
@@ -64,7 +62,7 @@ export class AuthenticationService {
     private refreshTokenTimeout;
 
     private startRefreshTokenTimer() {
-        var jwtToken = JSON.parse(atob(this.userValue.jwtToken.split('.')[1])); // get json object from encoded jwt.
+        var jwtToken = JSON.parse(atob(this.userSubject.value.jwtToken.split('.')[1])); // get json object from encoded jwt.
         var expires = new Date(jwtToken.exp * 1000);
         var timeout = expires.getTime() - Date.now() - (60 * 1000); // one minute before token expires
         this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);

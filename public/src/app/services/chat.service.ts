@@ -9,7 +9,7 @@ import { AuthenticationService } from '../services/authentication.service';
 })
 export class ChatService {
     constructor(private socket: Socket, private authenticationService: AuthenticationService) {
-        this.authenticationService.user.subscribe(x => {
+        this.authenticationService.getUserSubject().subscribe(x => {
             if (x && x.jwtToken) {
                 this.socket.emit('authenticate', x.jwtToken);
             }

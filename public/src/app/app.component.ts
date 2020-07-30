@@ -14,10 +14,11 @@ export class AppComponent {
   user: User;
 
   constructor(private authenticationService: AuthenticationService, public router: Router) {
-    this.authenticationService.user.subscribe(x => this.user = x);
+    this.authenticationService.getUserSubject().subscribe(x => this.user = x);
   }
 
   logout() {
+    console.log("ok");
     this.authenticationService.logout();
   }
 }

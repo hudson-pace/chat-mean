@@ -1,6 +1,5 @@
 <nav>
   <a *ngIf="user">{{user.username}}</a>
-  <a *ngIf="!user">-</a>
   <a routerLink = "/" [ngClass]="{
     'active': this.router.url === '/'
   }"
@@ -13,7 +12,7 @@
     'active': this.router.url === '/register'
   }"
   *ngIf="!user">Register</a>
-  <a (click)="logout" *ngIf="user">Logout</a>
+  <a (click)="logout()" *ngIf="user">Logout</a>
   <div class="dropdown-container">
     <a [ngClass]="{
       'active': this.router.url === '/games/battleship' ||
