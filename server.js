@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-//var http = require('http').createServer(app);
+const httpServer = require('http').createServer(app);
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
@@ -9,37 +9,35 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const errorHandler = require('./middleware/error-handler');
+const redirectToHttps = require('./middleware/redirect-to-https');
 const { secret } = require('./config/database');
 const { nextTick, disconnect } = require('process');
 const db = require('./helpers/db');
 const updateBattleship = require('./games/battleship');
 const updateMoveAround = require('./games/move-around');
-var options;
-try {
+var httpsServer, io;
+
+if (process.env.NODE_ENV === "production") {
 	options = {
 		key: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/privkey.pem'),
 		cert: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/fullchain.pem')
-	}
-} catch (err) {
-	console.log(err);
-	console.log('(ssl cert/key not found)');
-}
-var server;
-if (options) {
-	server = https.createServer(options, app);
+	};
+	httpsServer = https.createServer(options, app);
+	io = require('socket.io')(httpsServer);
 }
 else {
-	server = https.createServer(app);
+	io = require('socket.io')(httpServer);
 }
-const io = require('socket.io')(server);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({origin: (origin, callback) => callback(null, true), credentials: true}));
+app.use(redirectToHttps);
 app.use(express.static(path.join(__dirname, 'public', 'dist', 'ChatApp')));
 app.use('/users', require('./users/users.controller'));
 app.use(errorHandler);
+
 
 app.get('*', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public', 'dist', 'ChatApp', 'index.html'));
@@ -210,6 +208,11 @@ io.on('connection', function(socket) {
 	});
 });
 
-server.listen(3000, function() {
-	console.log('listening on port 3000...');
-});
+httpServer.listen(3000, function() {
+	console.log('listening to http on port 3000')
+})
+if (process.env.NODE_ENV === "production") {
+	httpsServer.listen(3001, function() {
+		console.log('listening to https on port 3001...');
+	});
+}
