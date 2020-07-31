@@ -1,6 +1,6 @@
 /* core authentication logic. generates jwt and refresh tokens, fetches user data */
 
-var config = require('../config/database');
+var config = require('../config');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var crypto = require('crypto');

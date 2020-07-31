@@ -10,14 +10,15 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const errorHandler = require('./middleware/error-handler');
 const redirectToHttps = require('./middleware/redirect-to-https');
-const { secret } = require('./config/database');
+const { secret } = require('./config');
 const { nextTick, disconnect } = require('process');
 const db = require('./helpers/db');
 const updateBattleship = require('./games/battleship');
 const updateMoveAround = require('./games/move-around');
+const config = require('./config')
 var httpsServer, io;
 
-if (process.env.NODE_ENV === "production") {
+if (config.environment === 'production') {
 	options = {
 		key: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/privkey.pem'),
 		cert: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/fullchain.pem')
@@ -211,7 +212,7 @@ io.on('connection', function(socket) {
 httpServer.listen(3000, function() {
 	console.log('listening to http on port 3000')
 })
-if (process.env.NODE_ENV === "production") {
+if (config.environment === "production") {
 	httpsServer.listen(3001, function() {
 		console.log('listening to https on port 3001...');
 	});

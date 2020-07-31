@@ -1,7 +1,7 @@
 /* used by the users controller to restrict access to a route based on specified roles. */
 
 var jwt = require('express-jwt');
-var { secret } = require('../config/database');
+var { secret } = require('../config');
 var db = require('../helpers/db');
 
 module.exports = authorize;

@@ -1,8 +1,11 @@
+const config = require('../config');
+
 module.exports = redirectToHttps;
 
 function redirectToHttps(req, res, next) {
-    if (process.env.NODE_ENV !== "production" || req.headers['x-forwarded-proto'] === 'https') {
+    if (config.environment !== "production" || req.secure) {
         return next();
     }
-    return res.redirect('https://' + req.headers.host + req.url);
+    let newHost = req.headers.host.substring(0, req.headers.host.indexOf(':')) + ':3001';
+    return res.redirect('https://' + newHost + req.url);
 }
