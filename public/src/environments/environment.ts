@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://hudsonotron.com:3000',
-  socketUrl: 'http://localhost:3000'
+  apiUrl: 'https://hudsonotron.com',
+  socketUrl: 'https://hudsonotron.com'
 };
 
 /*
