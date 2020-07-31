@@ -19,18 +19,16 @@
       this.router.url === '/games/move-around'
     }">Games</a>
     <div class="dropdown-content">
-      <a routerLink="/games/battleship" [ngClass]="{
+      <div><a routerLink="/games/battleship" [ngClass]="{
         'active': this.router.url === '/games/battleship'
       }"
-      >Battleship</a>
-      <a routerLink="/games/move-around" [ngClass]="{
+      >Battleship</a></div>
+      <div><a routerLink="/games/move-around" [ngClass]="{
         'active': this.router.url === '/games/move-around'
       }"
-      >Move-Around</a>
+      >Move-Around</a></div>
     </div>
   </div>
 </nav>
-<div>
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
 <app-chat></app-chat>
