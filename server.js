@@ -1,18 +1,37 @@
-var express = require('express');
-var app = express();
-var http = require('http').createServer(app);
-var path = require('path');
-var io = require('socket.io')(http);
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var jwt = require('jsonwebtoken');
-var cors = require('cors');
-var errorHandler = require('./middleware/error-handler');
-var { secret } = require('./config/database');
+const express = require('express');
+const app = express();
+//var http = require('http').createServer(app);
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const errorHandler = require('./middleware/error-handler');
+const { secret } = require('./config/database');
 const { nextTick, disconnect } = require('process');
-var db = require('./helpers/db');
+const db = require('./helpers/db');
 const updateBattleship = require('./games/battleship');
 const updateMoveAround = require('./games/move-around');
+var options;
+try {
+	options = {
+		key: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/privkey.pem'),
+		cert: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/fullchain.pem')
+	}
+} catch (err) {
+	console.log(err);
+	console.log('(ssl cert/key not found)');
+}
+var server;
+if (options) {
+	server = https.createServer(options, app);
+}
+else {
+	server = https.createServer(app);
+}
+const io = require('socket.io')(server);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -191,6 +210,6 @@ io.on('connection', function(socket) {
 	});
 });
 
-http.listen(3000, function() {
+server.listen(3000, function() {
 	console.log('listening on port 3000...');
 });
