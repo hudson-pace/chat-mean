@@ -31,9 +31,7 @@
   </div>
 </nav>
 <router-outlet></router-outlet>
-<app-chat [ngClass]="{
-  'active': this.chatIsActive
-}"></app-chat>
+<app-chat [class.active] = 'isChatActive'></app-chat>
 <div class="footer">
   <a (click)="toggleChat()">chat</a>
 </div>
