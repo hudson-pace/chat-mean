@@ -7,14 +7,14 @@ li {
 }
 #chatbox-container {
     position: fixed;
-    bottom: 2em;
+    bottom: 4em;
     right: 2em;
     display: inline-block;
     width: 20em;
     height: 40%;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
     font-size: 1em;
-    background-color: #ffffff;
+    background-color: #feffff;
 }
 #chatbox-header {
     height: 10%;

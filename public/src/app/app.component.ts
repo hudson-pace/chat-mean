@@ -12,13 +12,16 @@ import { User } from './models/user';
 export class AppComponent {
   title = 'ChatApp';
   user: User;
+  isChatActive: boolean = false;
 
   constructor(private authenticationService: AuthenticationService, public router: Router) {
     this.authenticationService.getUserSubject().subscribe(x => this.user = x);
   }
 
   logout() {
-    console.log("ok");
     this.authenticationService.logout();
+  }
+  toggleChat() {
+    this.isChatActive = !this.isChatActive;
   }
 }

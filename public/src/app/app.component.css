@@ -49,3 +49,22 @@ a:hover {
 .dropdown-container:hover .dropdown-content {
     display: block;
 }
+
+.footer {
+    background-color: #feffff;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.footer a {
+    margin: 0;
+    margin-right: 16em;
+    float: right;
+}
+
+app-chat {
+    display: none;
+}
+app-chat.active {
+    display: block;
+}
