@@ -11,8 +11,6 @@ import { BattleshipComponent } from './games/battleship/battleship.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
   { path: 'games/move-around', component: MoveAroundComponent},
   { path: 'games/battleship', component: BattleshipComponent},
   { path: '**', redirectTo: '' } // default to home

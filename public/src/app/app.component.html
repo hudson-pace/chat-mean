@@ -1,37 +1,41 @@
-<nav>
-  <a *ngIf="user">{{user.username}}</a>
-  <a routerLink = "/" [ngClass]="{
-    'active': this.router.url === '/'
-  }"
-  >Home</a>
-  <a routerLink="/login" [ngClass]="{
-    'active': this.router.url === '/login'
-  }"
-  *ngIf="!user">Login</a>
-  <a routerLink="/register" [ngClass]="{
-    'active': this.router.url === '/register'
-  }"
-  *ngIf="!user">Register</a>
-  <a (click)="logout()" *ngIf="user">Logout</a>
-  <div class="dropdown-container">
-    <a [ngClass]="{
-      'active': this.router.url === '/games/battleship' ||
-      this.router.url === '/games/move-around'
-    }">Games</a>
-    <div class="dropdown-content">
-      <div><a routerLink="/games/battleship" [ngClass]="{
-        'active': this.router.url === '/games/battleship'
-      }"
-      >Battleship</a></div>
-      <div><a routerLink="/games/move-around" [ngClass]="{
-        'active': this.router.url === '/games/move-around'
-      }"
-      >Move-Around</a></div>
+<div class="page-wrapper">
+  <nav>
+    <a  class="home-button" routerLink = "/" 
+    [class.active] = "this.router.url === '/'">Hudsonotron</a>
+
+    <div class="pages">
+      <div class="dropdown-container">
+        <a [ngClass]="{
+          'active': this.router.url === '/games/battleship' ||
+          this.router.url === '/games/move-around'
+        }">Games</a>
+        <div class="dropdown-content">
+          <div><a routerLink="/games/battleship" [ngClass]="{
+            'active': this.router.url === '/games/battleship'
+          }"
+          >Battleship</a></div>
+          <div><a routerLink="/games/move-around" [ngClass]="{
+            'active': this.router.url === '/games/move-around'
+          }"
+          >Move-Around</a></div>
+        </div>
+      </div>
     </div>
+
+    <div class="account-settings">
+      <a *ngIf="user">{{user.username}}</a>
+      <a *ngIf="user" (click)="logout()">Logout</a>
+      <a *ngIf="!user" (click)="toggleLogin()">Log In</a>
+      <a *ngIf="!user" (click)="toggleRegister()">Sign Up</a>
+    </div>
+  </nav>
+  <router-outlet></router-outlet>
+  <app-chat [class.active] = 'isChatActive'></app-chat>
+  <div class="footer">
+    <a (click)="toggleChat()">chat</a>
   </div>
-</nav>
-<router-outlet></router-outlet>
-<app-chat [class.active] = 'isChatActive'></app-chat>
-<div class="footer">
-  <a (click)="toggleChat()">chat</a>
 </div>
+<div class="page-content" [class.dimmed] = "this.isPageDimmed" (click)="clickOutside()"></div>
+
+<app-login *ngIf='isLoginActive'></app-login>
+<app-register *ngIf='isRegisterActive'></app-register>
