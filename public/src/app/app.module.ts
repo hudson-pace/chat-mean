@@ -17,6 +17,8 @@ import { RegisterComponent } from './register/register.component';
 import { environment } from '../environments/environment';
 import { MoveAroundComponent } from './games/move-around/move-around.component';
 import { BattleshipComponent } from './games/battleship/battleship.component';
+import { ForumComponent } from './forum/forum.component';
+import { CreatePostComponent } from './forum/create-post/create-post.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -28,7 +30,9 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     ChatComponent,
     RegisterComponent,
     MoveAroundComponent,
-    BattleshipComponent
+    BattleshipComponent,
+    ForumComponent,
+    CreatePostComponent
   ],
   imports: [
     BrowserModule,

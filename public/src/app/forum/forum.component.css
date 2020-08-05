@@ -1,0 +1,29 @@
+.container {
+    width: 75vw;
+    display: inline-block;
+    font-family: verdana;
+}
+
+.post {
+    background-color: #feffff;
+    margin: 2vh 0;
+    padding: 3vh 3vw;
+    font-size: 1.3rem;
+    text-align: left;
+}
+.post:hover {
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
+}
+
+.post-info {
+    font-size: .8rem;
+    margin-bottom: 1vh;
+}
+
+.create-post {
+    text-align: center;
+}
+.create-post button {
+    font-size: 1.3rem;
+    padding: 1vh 1vw;
+}
