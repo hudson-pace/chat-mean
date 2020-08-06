@@ -6,10 +6,13 @@ const validateRequest = require('../middleware/validate-request');
 const { getById } = require('../users/user.service');
 const postService = require('./post.service');
 const { Post } = require('../helpers/db');
+const Role = require('../helpers/role');
 
 //routes
 router.post('/', authorize(), createPostSchema, createPost);
 router.get('/', getAllPosts);
+router.get('/:id', getPostById);
+router.delete('/:id', authorize(), deletePost);
 
 module.exports = router;
 
@@ -44,5 +47,26 @@ function createPost(req, res, next) {
 function getAllPosts(req, res, next) {
     postService.getAllPosts()
         .then(posts => res.json(posts))
+        .catch(next);
+}
+
+function getPostById(req, res, next) {
+    postService.getPostById(req.params.id)
+        .then(post => res.json(post))
+        .catch(next);
+}
+
+function deletePost(req, res, next) {
+    postService.getPostById(req.params.id)
+        .then(post => {
+            if (post.author === req.user.username || req.user.role === Role.Admin) {
+                postService.deletePost(req.params.id)
+                    .then(({ success }) => res.json(success))
+                    .catch(next);
+            }
+            else {
+                return res.status(401).json({message: 'Unauthorized'});
+            }
+        })
         .catch(next);
 }

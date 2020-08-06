@@ -20,6 +20,7 @@
     "mongoose": "^5.9.20",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "shortid": "^2.2.15",
     "socket.io": "^2.3.0"
   }
 }

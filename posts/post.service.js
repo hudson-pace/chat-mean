@@ -4,7 +4,9 @@ const { getUserByName, getById } = require('../users/user.service');
 
 module.exports = {
     createPost,
-    getAllPosts
+    getAllPosts,
+    getPostById,
+    deletePost
 }
 
 async function createPost(params) {
@@ -19,13 +21,31 @@ async function createPost(params) {
     return true;
 }
 
-async function getAllPosts(req, res, next) {
+async function getAllPosts() {
     var posts = await Post.find().populate('author');
     return posts.map(x => getPostDetails(x));
 }
 
+async function getPostById(id) {
+    var post = await Post.findOne({ 'postId': id }).populate('author');
+    return getPostDetails(post);
+}
+
+async function deletePost(id) {
+    let success = false;
+    let result = await Post.deleteOne({ 'postId': id });
+    if (result.deletedCount > 0) {
+        success = true;
+    }
+    return {
+        success: {
+            success: success
+        }
+    }
+}
+
 function getPostDetails(post) {
-    var { author, text, datePosted, votes, comments, tags } = post;
+    var { author, text, datePosted, votes, comments, tags, postId } = post;
     author = author.username;
-    return { author, text, datePosted, votes, comments, tags };
+    return { author, text, datePosted, votes, comments, tags, postId };
 }

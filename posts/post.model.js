@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const shortId = require('shortid');
 
 var postSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
@@ -13,7 +14,8 @@ var postSchema = new mongoose.Schema({
         datePosted: { type: Date, required: true },
         parent: { type: mongoose.Schema.Types.ObjectId }
     }],
-    votes: { type: Number, required: true }
+    votes: { type: Number, required: true },
+    postId: { type: String, unique: true, default: shortId.generate } 
 });
 
 module.exports = mongoose.model('Post', postSchema);
