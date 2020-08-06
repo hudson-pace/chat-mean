@@ -10,7 +10,7 @@ nav {
     text-align: center;
     font-family: verdana;
     font-size: 1em;
-    padding: 0 2vw;
+    display: flex;
 }
 a {
     cursor: pointer;
@@ -22,10 +22,6 @@ a {
     margin: 1.5vh .6vw;
     border-radius: 20px;
     outline: none;
-}
-a.home-button {
-    display: block;
-    float: left;
 }
 
 a.active {
@@ -59,11 +55,19 @@ a:hover {
 .dropdown-container:hover .dropdown-content {
     display: block;
 }
+.home {
+    flex: 1;
+    text-align: left;
+}
 .pages {
-    display: inline-block;
+    flex: 1;
 }
 .account-settings {
-    float: right;
+    flex: 1;
+    text-align: right;
+}
+.account-dropdown-wrapper {
+    margin-right: 8vw;
 }
 .footer {
     background-color: #feffff;

@@ -1,7 +1,9 @@
 <div class="page-wrapper">
   <nav>
-    <a  class="home-button" routerLink = "/" 
-    [class.active] = "this.router.url === '/'">Hudsonotron</a>
+    <div class="home">
+      <a  class="home-button" routerLink = "/" 
+      [class.active] = "this.router.url === '/'">Hudsonotron</a>
+    </div>
 
     <div class="pages">
       <div class="dropdown-container">
@@ -24,8 +26,18 @@
     </div>
 
     <div class="account-settings">
-      <a *ngIf="user" [routerLink]="['/users', user.username]">{{user.username}}</a>
-      <a *ngIf="user" (click)="logout()">Logout</a>
+      <div class="account-dropdown-wrapper">
+        <div *ngIf="user" class="dropdown-container">
+          <a [class.active] = "this.router.url === '/users/' + user.username">{{ user.username }}</a>
+          <div class="dropdown-content">
+            <div><a [routerLink]="['/users', user.username]">View Profile</a></div>
+            <div><a routerLink="/dashboard">Account Settings</a></div>
+            <div><a *ngIf="user" (click)="logout()">Logout</a></div>
+          </div>
+        </div>
+      </div>
+      
+      
       <a *ngIf="!user" (click)="toggleLogin()">Log In</a>
       <a *ngIf="!user" (click)="toggleRegister()">Sign Up</a>
     </div>

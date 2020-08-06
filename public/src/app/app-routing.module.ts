@@ -8,6 +8,7 @@ import { BattleshipComponent } from './games/battleship/battleship.component';
 import { ForumComponent } from './forum/forum.component';
 import { CreatePostComponent } from './forum/create-post/create-post.component';
 import { UserPageComponent } from './user-page/user-page.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'forum', component: ForumComponent },
   { path: 'forum/create-post', component: CreatePostComponent, canActivate: [ AuthGuard ]},
   { path: 'users/:username', component: UserPageComponent },
+  { path: 'dashboard', component: DashboardComponent },
   { path: '**', redirectTo: '' } // default to home
 ];
 

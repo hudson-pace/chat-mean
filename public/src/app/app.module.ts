@@ -20,6 +20,7 @@ import { BattleshipComponent } from './games/battleship/battleship.component';
 import { ForumComponent } from './forum/forum.component';
 import { CreatePostComponent } from './forum/create-post/create-post.component';
 import { UserPageComponent } from './user-page/user-page.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -34,7 +35,8 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     BattleshipComponent,
     ForumComponent,
     CreatePostComponent,
-    UserPageComponent
+    UserPageComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
