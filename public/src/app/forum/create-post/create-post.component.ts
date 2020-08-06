@@ -31,7 +31,7 @@ export class CreatePostComponent implements OnInit {
     this.createPost(this.postForm.value);
   }
   createPost(postData) {
-    this.forumService.createPost(this.author, postData.text, postData.tags.split(', ')).subscribe(data => {
+    this.forumService.createPost(postData.text, postData.tags.split(', ')).subscribe(data => {
       console.log(data);
     });
   }

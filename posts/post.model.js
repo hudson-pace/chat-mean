@@ -4,17 +4,12 @@ const shortId = require('shortid');
 var postSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
     text: { type: String, required: true },
-    datePosted: { type: Date, required: true},
+    datePosted: { type: Date, required: true, default: Date.now() },
     tags: [{
         type: String
     }],
-    comments: [{
-        author: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
-        text: { type: String, required: true },
-        datePosted: { type: Date, required: true },
-        parent: { type: mongoose.Schema.Types.ObjectId }
-    }],
-    votes: { type: Number, required: true },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+    votes: { type: Number, required: true, default: 0 },
     postId: { type: String, unique: true, default: shortId.generate } 
 });
 

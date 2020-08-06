@@ -10,6 +10,7 @@ const Role = require('../helpers/role');
 
 //routes
 router.post('/', authorize(), createPostSchema, createPost);
+router.post('/:id', authorize(), createCommentSchema, createComment);
 router.get('/', getAllPosts);
 router.get('/:id', getPostById);
 router.delete('/:id', authorize(), deletePost);
@@ -18,7 +19,6 @@ module.exports = router;
 
 function createPostSchema(req, res, next) {
     var schema = Joi.object({
-        author: Joi.string().required(),
         text: Joi.string().required(),
         tags: Joi.array().items(Joi.string())
     });
@@ -27,19 +27,30 @@ function createPostSchema(req, res, next) {
 function createPost(req, res, next) {
     getById(req.user.id)
         .then(user => {
-            if (user.username === req.body.author) {
-                postService.createPost(req.body)
-                    .then(post => {
-                        if (post) {
-                            return res.json('post successfully created');
-                        }
-                        return res.json("post could not be created");
-                    })
-                    .catch(next);
-            }
-            else {
-                return res.status(401).json({message: 'Unauthorized'});
-            }
+            postService.createPost(user, req.body.text, req.body.tags)
+                .then(post => {
+                    if (post) {
+                        return res.json('post successfully created');
+                    }
+                    return res.json("post could not be created");
+                })
+                .catch(next);
+        })
+        .catch(next);
+}
+
+function createCommentSchema(req, res, next) {
+    var schema = Joi.object({
+        text: Joi.string().required()
+    });
+    validateRequest(req, next, schema);
+}
+function createComment(req, res, next) {
+    getById(req.user.id)
+        .then(user => {
+            postService.createComment(user, req.body.text, req.params.id)
+                .then(success => { return res.json(success) })
+                .catch(next);
         })
         .catch(next);
 }

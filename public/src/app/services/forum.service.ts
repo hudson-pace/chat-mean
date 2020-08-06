@@ -13,9 +13,8 @@ export class ForumService {
     private httpClient: HttpClient
   ) { }
 
-  createPost(author: string, text: string, tags: string) {
+  createPost(text: string, tags: string) {
     return this.httpClient.post<any>(`${environment.apiUrl}/posts`, {
-      author: author,
       text: text,
       tags: tags
     }, { withCredentials: true });

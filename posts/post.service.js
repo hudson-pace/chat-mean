@@ -1,22 +1,31 @@
 const mongoose = require('mongoose');
-const { Post } = require('../helpers/db');
+const { Post, Comment } = require('../helpers/db');
 const { getUserByName, getById } = require('../users/user.service');
 
 module.exports = {
     createPost,
     getAllPosts,
     getPostById,
-    deletePost
+    deletePost,
+    createComment
 }
 
-async function createPost(params) {
-    let user = await getUserByName(params.author);
+async function createPost(author, text, tags) {
     var post = new Post();
-    post.author = user._id;
-    post.text = params.text;
-    post.datePosted = Date.now();
-    post.tags = params.tags;
-    post.votes = 0;
+    post.author = author.id;
+    post.text = text;
+    post.tags = tags;
+    await post.save();
+    return true;
+}
+
+async function createComment(author, text, postId) {
+    var comment = new Comment();
+    comment.author = author.id;
+    comment.text = text;
+    await comment.save();
+    var post = await Post.findOne({ 'postId': postId });
+    post.comments.push(comment._id);
     await post.save();
     return true;
 }
