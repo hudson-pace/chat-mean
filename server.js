@@ -36,7 +36,7 @@ app.use(cookieParser());
 app.use(cors({origin: (origin, callback) => callback(null, true), credentials: true}));
 app.use(redirectToHttps);
 app.use(express.static(path.join(__dirname, 'public', 'dist', 'ChatApp')));
-app.use('/users', require('./users/users.controller'));
+app.use('/api/users', require('./users/users.controller'));
 app.use('/api/posts', require('./posts/posts.controller'));
 app.use(errorHandler);
 

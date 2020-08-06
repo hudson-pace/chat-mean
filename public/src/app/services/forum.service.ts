@@ -14,13 +14,13 @@ export class ForumService {
   ) { }
 
   createPost(author: string, text: string, tags: string) {
-    return this.httpClient.post<any>(`${environment.apiUrl}/api/posts`, {
+    return this.httpClient.post<any>(`${environment.apiUrl}/posts`, {
       author: author,
       text: text,
       tags: tags
     }, { withCredentials: true });
   }
   getAllPosts() {
-    return this.httpClient.get<Post[]>(`${environment.apiUrl}/api/posts`);
+    return this.httpClient.get<Post[]>(`${environment.apiUrl}/posts`);
   }
 }
