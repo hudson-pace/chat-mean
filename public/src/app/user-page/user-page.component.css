@@ -1,0 +1,11 @@
+.wrapper {
+    background-color: #feffff;
+    margin-top: 3vh;
+    display: inline-block;
+    width: 70vw;
+    min-height: 30vh;
+}
+
+h1 { 
+    margin-top: 3vh;
+}

@@ -24,7 +24,7 @@
     </div>
 
     <div class="account-settings">
-      <a *ngIf="user">{{user.username}}</a>
+      <a *ngIf="user" [routerLink]="['/users', user.username]">{{user.username}}</a>
       <a *ngIf="user" (click)="logout()">Logout</a>
       <a *ngIf="!user" (click)="toggleLogin()">Log In</a>
       <a *ngIf="!user" (click)="toggleRegister()">Sign Up</a>

@@ -53,7 +53,11 @@ export class AuthenticationService {
                 this.userSubject.next(user);
                 this.startRefreshTokenTimer();
                 return user;
-            }))
+            }));
+    }
+
+    getUser(username: string) {
+        return this.http.get<any>(`${environment.apiUrl}/users/${username}`)
     }
 
 

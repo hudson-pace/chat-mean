@@ -19,6 +19,7 @@ import { MoveAroundComponent } from './games/move-around/move-around.component';
 import { BattleshipComponent } from './games/battleship/battleship.component';
 import { ForumComponent } from './forum/forum.component';
 import { CreatePostComponent } from './forum/create-post/create-post.component';
+import { UserPageComponent } from './user-page/user-page.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -32,7 +33,8 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     MoveAroundComponent,
     BattleshipComponent,
     ForumComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    UserPageComponent
   ],
   imports: [
     BrowserModule,
