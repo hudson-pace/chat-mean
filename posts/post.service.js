@@ -25,7 +25,7 @@ async function getAllPosts(req, res, next) {
 }
 
 function getPostDetails(post) {
-    var { author, text, datePosted, votes, comments } = post;
+    var { author, text, datePosted, votes, comments, tags } = post;
     author = author.username;
-    return { author, text, datePosted, votes, comments };
+    return { author, text, datePosted, votes, comments, tags };
 }

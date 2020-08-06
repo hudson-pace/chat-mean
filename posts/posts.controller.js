@@ -17,10 +17,7 @@ function createPostSchema(req, res, next) {
     var schema = Joi.object({
         author: Joi.string().required(),
         text: Joi.string().required(),
-        datePosted: Joi.date(),
-        tags: [
-            Joi.string()
-        ]
+        tags: Joi.array().items(Joi.string())
     });
     validateRequest(req, next, schema);
 }

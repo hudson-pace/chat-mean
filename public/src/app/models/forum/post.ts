@@ -1,5 +1,6 @@
-export class Post {
+export interface Post {
     text: string;
-    from: string;
+    author: string;
     tags: string[];
+    datePosted: string;
 }

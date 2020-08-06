@@ -1,7 +1,8 @@
 <div class="container">
     <div class="post create-post"><a routerLink="/forum/create-post"><button>Create Post</button></a></div>
+    <div class="post"><button (click)="getPosts()">get posts</button></div>
     <div class="post" *ngFor="let post of posts">
-        <div class="post-info">posted by {{ post.from }}. tags: <span *ngFor="let tag of post.tags">{{ tag }}, </span></div>
+        <div class="post-info">posted by {{ post.author }}. tags: <span *ngFor="let tag of post.tags">{{ tag }}, </span></div>
         {{ post.text }}
     </div>
 </div>

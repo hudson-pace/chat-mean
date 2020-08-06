@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'games/move-around', component: MoveAroundComponent },
   { path: 'games/battleship', component: BattleshipComponent },
   { path: 'forum', component: ForumComponent },
-  { path: 'forum/create-post', component: CreatePostComponent },
+  { path: 'forum/create-post', component: CreatePostComponent, canActivate: [ AuthGuard ]},
   { path: '**', redirectTo: '' } // default to home
 ];
 

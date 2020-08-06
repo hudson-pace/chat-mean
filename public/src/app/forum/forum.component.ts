@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Post } from '../models/forum/post';
+import { ForumService } from '../services/forum.service';
 
 @Component({
   selector: 'app-forum',
@@ -7,26 +8,19 @@ import { Post } from '../models/forum/post';
   styleUrls: ['./forum.component.css']
 })
 export class ForumComponent implements OnInit {
-  posts: Post[] = [
-    {
-      text: "Be yourself; Everyone else is already taken.",
-      from: "Oscar Wilde",
-      tags: ["inspirational", "misattributed quotes"]
-    },
-    {
-      text: "So many books, so little time.",
-      from: "Frank Zappa",
-      tags: ["books", "humor"]
-    },
-    {
-      text: "A room without books is like a body without a soul.",
-      from: "Marcus Tullius Cicero",
-      tags: ["books", "soul"]
-    }
-  ];
-  constructor() { }
+  posts: Post[];
+  constructor(
+    private forumService: ForumService
+  ) { }
 
   ngOnInit(): void {
+  }
+
+
+  getPosts() {
+    this.forumService.getAllPosts().subscribe((posts: Post[]) => {
+      this.posts = posts;
+    });
   }
 
 }
