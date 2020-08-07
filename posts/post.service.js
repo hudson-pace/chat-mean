@@ -32,7 +32,7 @@ async function createComment(author, text, parentId) {
 }
 
 async function getChildrenOfComment(commentId) {
-    return await Comment.find({ 'parent': commentId });
+    return await Comment.find({ 'parent': commentId }).populate('author');
 }
 
 async function getAllPosts() {
