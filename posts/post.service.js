@@ -7,7 +7,9 @@ module.exports = {
     getAllPosts,
     getPostById,
     deletePost,
-    createComment
+    createComment,
+    getChildrenOfComment,
+    getRealPostId
 }
 
 async function createPost(author, text, tags) {
@@ -19,15 +21,18 @@ async function createPost(author, text, tags) {
     return true;
 }
 
-async function createComment(author, text, postId) {
+async function createComment(author, text, parentId) {
     var comment = new Comment();
     comment.author = author.id;
     comment.text = text;
+    comment.parent = parentId;
+    console.log(comment);
     await comment.save();
-    var post = await Post.findOne({ 'postId': postId });
-    post.comments.push(comment._id);
-    await post.save();
     return true;
+}
+
+async function getChildrenOfComment(commentId) {
+    return await Comment.find({ 'parent': commentId });
 }
 
 async function getAllPosts() {
@@ -37,7 +42,15 @@ async function getAllPosts() {
 
 async function getPostById(id) {
     var post = await Post.findOne({ 'postId': id }).populate('author');
-    return getPostDetails(post);
+    var comments = await Comment.find({ 'parent': post._id }).populate('author');
+    var postDetails = getPostDetails(post);
+    postDetails.comments = comments;
+    return postDetails;
+}
+
+async function getRealPostId(shortId) {
+    var post = await Post.findOne({ 'postId': shortId });
+    return post._id;
 }
 
 async function deletePost(id) {
@@ -54,7 +67,7 @@ async function deletePost(id) {
 }
 
 function getPostDetails(post) {
-    var { author, text, datePosted, votes, comments, tags, postId } = post;
+    var { author, text, datePosted, votes, tags, postId } = post;
     author = author.username;
-    return { author, text, datePosted, votes, comments, tags, postId };
+    return { author, text, datePosted, votes, tags, postId };
 }

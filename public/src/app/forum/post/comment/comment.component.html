@@ -1,0 +1,4 @@
+<div class="container">
+    {{ comment.author.username }}: {{ comment.text }}
+    <app-comment *ngFor="let childComment of childComments" [comment]=childComment></app-comment>
+</div>

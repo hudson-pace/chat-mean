@@ -1,0 +1,8 @@
+.container {
+    text-align: left;
+    border: 1px solid gray;
+    width: 80%;
+    display: inline-block;
+    margin: 1vh 0;
+    padding: 1vh 2vw;
+}

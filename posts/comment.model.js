@@ -4,8 +4,8 @@ var commentSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
     text: { type: String, required: true },
     datePosted: { type: Date, required: true, default: Date.now() },
-    children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    votes: { type: Number, default: 0 }
+    votes: { type: Number, default: 0 },
+    parent: { type: mongoose.Schema.Types.ObjectId, required: true }
 });
 
 module.exports = mongoose.model('Comment', commentSchema);

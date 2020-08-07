@@ -6,8 +6,7 @@ var Schema = mongoose.Schema;
 var schema = new Schema({
     username: {type: String, unique: true, required: true},
     passwordHash: {type: String, required: true},
-    role: {type: String, required: true},
-    posts: [{type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Post'}]
+    role: {type: String, required: true}
 });
 
 schema.set('toJSON', {

@@ -11,8 +11,10 @@ const Role = require('../helpers/role');
 //routes
 router.post('/', authorize(), createPostSchema, createPost);
 router.post('/:id', authorize(), createCommentSchema, createComment);
+router.post('/comments/:id', authorize(), createCommentSchema, createCommentReply);
 router.get('/', getAllPosts);
 router.get('/:id', getPostById);
+router.get('/comments/:id', getChildrenOfComment);
 router.delete('/:id', authorize(), deletePost);
 
 module.exports = router;
@@ -48,10 +50,28 @@ function createCommentSchema(req, res, next) {
 function createComment(req, res, next) {
     getById(req.user.id)
         .then(user => {
-            postService.createComment(user, req.body.text, req.params.id)
-                .then(success => { return res.json(success) })
+            postService.getRealPostId(req.params.id)
+                .then(postId => {
+                    postService.createComment(user, req.body.text, postId)
+                        .then(success => res.json(success))
+                        .catch(next);
+                })
                 .catch(next);
         })
+        .catch(next);
+}
+function createCommentReply(req, res, next) {
+    getById(req.user.id)
+        .then(user => {
+            postService.createComment(user, req.body.text, req.params.id)
+                .then(success => res.json(success))
+                .catch(next);
+        })
+        .catch(next);
+}
+function getChildrenOfComment(req, res, next) {
+    postService.getChildrenOfComment(req.params.id)
+        .then(comments => res.json(comments))
         .catch(next);
 }
 

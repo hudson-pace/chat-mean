@@ -18,7 +18,6 @@ export class UserPageComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.authenticationService.getUser(params['username']).subscribe(user => {
         this.user = user;
-        console.log(user);
       });
     })
   }

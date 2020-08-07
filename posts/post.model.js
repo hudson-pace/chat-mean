@@ -8,7 +8,6 @@ var postSchema = new mongoose.Schema({
     tags: [{
         type: String
     }],
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     votes: { type: Number, required: true, default: 0 },
     postId: { type: String, unique: true, default: shortId.generate } 
 });

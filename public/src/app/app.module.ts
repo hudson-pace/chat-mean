@@ -21,6 +21,8 @@ import { ForumComponent } from './forum/forum.component';
 import { CreatePostComponent } from './forum/create-post/create-post.component';
 import { UserPageComponent } from './user-page/user-page.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { PostComponent } from './forum/post/post.component';
+import { CommentComponent } from './forum/post/comment/comment.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -36,7 +38,9 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     ForumComponent,
     CreatePostComponent,
     UserPageComponent,
-    DashboardComponent
+    DashboardComponent,
+    PostComponent,
+    CommentComponent
   ],
   imports: [
     BrowserModule,
