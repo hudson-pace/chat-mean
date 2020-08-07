@@ -15,7 +15,8 @@ const { nextTick, disconnect } = require('process');
 const db = require('./helpers/db');
 const updateBattleship = require('./games/battleship');
 const updateMoveAround = require('./games/move-around');
-const config = require('./config')
+const updatePong = require('./games/pong');
+const config = require('./config');
 var httpsServer, io;
 
 if (config.environment === 'production') {
@@ -95,6 +96,9 @@ io.on('connection', function(socket) {
 					break;
 				case 'move-around':
 					updateMoveAround(update, user, io);
+					break;
+				case 'pong':
+					updatePong(update, user, io);
 					break;
 			}
 		}
@@ -205,6 +209,9 @@ io.on('connection', function(socket) {
 				break;
 			case 'move-around':
 				updateMoveAround(update, user, io);
+				break;
+			case 'pong':
+				updatePong(update, user, io);
 				break;
 		}
 	});

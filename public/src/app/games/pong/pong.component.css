@@ -4,3 +4,25 @@ canvas {
     height: 80vh;
     width: 40vw;
 }
+canvas.inactive {
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+}
+
+.menu {
+    margin-top: 4vh;
+    background-color: #feffff;
+    width: 40vw;
+    display: inline-block;
+    padding: 5vh 0;
+}
+.menu span {
+    margin-bottom: 4vh;
+}
+.menu button {
+    font-size: 1em;
+    font-family: verdana;
+    margin: 0 3vw;
+    padding: 1vh 1vw;
+}

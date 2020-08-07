@@ -20,6 +20,7 @@
             'active': this.router.url === '/games/move-around'
           }"
           >Move-Around</a></div>
+          <div><a routerLink="/games/pong" [class.active]="this.router.url === '/games/pong'">Pong</a></div>
         </div>
       </div>
       <a routerLink="/forum" [class.active] = "this.router.url === '/forum'">Forum</a>
