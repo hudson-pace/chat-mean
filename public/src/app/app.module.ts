@@ -24,6 +24,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PostPageComponent } from './forum/post-page/post-page.component';
 import { CommentComponent } from './forum/comment/comment.component';
 import { PostComponent } from './forum/post/post.component';
+import { PongComponent } from './games/pong/pong.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -42,7 +43,8 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     DashboardComponent,
     PostPageComponent,
     CommentComponent,
-    PostComponent
+    PostComponent,
+    PongComponent
   ],
   imports: [
     BrowserModule,
