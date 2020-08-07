@@ -9,7 +9,8 @@ module.exports = {
     deletePost,
     createComment,
     getChildrenOfComment,
-    getRealPostId
+    getRealPostId,
+    getPostsFromUser
 }
 
 async function createPost(author, text, tags) {
@@ -64,6 +65,11 @@ async function deletePost(id) {
             success: success
         }
     }
+}
+
+async function getPostsFromUser(username) {
+    var user = await getUserByName(username);
+    return await Post.find({ 'author': user._id });
 }
 
 function getPostDetails(post) {

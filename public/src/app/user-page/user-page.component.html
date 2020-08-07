@@ -1,4 +1,5 @@
 <div *ngIf="user" class="wrapper">
     <h1>{{ user.username }}</h1>
     <h4>{{ user.role }}</h4>
+    <app-post *ngFor="let post of posts" [post]="post"></app-post>
 </div>

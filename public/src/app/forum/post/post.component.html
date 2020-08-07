@@ -1,16 +1,4 @@
-<div *ngIf="post" class="container">
-    <div class="post">
-        <h1>{{ post.text }}</h1>
-        <h4>{{ post.author }}</h4>
-    </div>
-    <div class="comment-section">
-        <h2>Comments</h2>
-        <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()">
-            <input type="text" formControlName="text">
-            <button type="submit">Post Comment</button>
-        </form>
-        <div class="comments">
-            <app-comment *ngFor="let comment of post.comments" [comment]="comment"></app-comment>
-        </div>
-    </div>
+<div class="post" [routerLink]="['/forum/posts/', post.postId]">
+    <div class="post-info">posted by {{ post.author }}. tags: <span *ngFor="let tag of post.tags">{{ tag }}, </span></div>
+    {{ post.text }}
 </div>

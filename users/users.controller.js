@@ -5,16 +5,18 @@ var validateRequest = require('../middleware/validate-request');
 var authorize = require('../middleware/authorize');
 var Role = require('../helpers/role');
 var userService = require('./user.service');
+const postService = require('../posts/post.service');
 
 //routes
 router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
-router.delete('/:username', authorize(), deleteUser);
+router.delete('/user/:username', authorize(), deleteUser);
 router.get('/', authorize(Role.Admin), getAll);
-router.get('/:username', getByName);
-router.get('/:username/refresh-tokens', authorize(), getRefreshTokens);
+router.get('/user/:username', getByName);
+router.get('/user/:username/refresh-tokens', authorize(), getRefreshTokens);
+router.get('/user/:username/posts', getPostsFromUser);
 
 module.exports = router;
 
@@ -123,6 +125,12 @@ function getRefreshTokens(req, res, next) {
     }
     userService.getRefreshTokens(req.params.id)
         .then(tokens => tokens ? res.json(tokens) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getPostsFromUser(req, res, next) {
+    postService.getPostsFromUser(req.params.username)
+        .then(posts => res.json(posts))
         .catch(next);
 }
 

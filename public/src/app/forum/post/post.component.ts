@@ -1,8 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ForumService } from '../../services/forum.service';
-import { Post } from 'src/app/models/forum/post';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-post',
@@ -10,30 +6,10 @@ import { FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./post.component.css']
 })
 export class PostComponent implements OnInit {
-  post: Post;
-  postId: string;
-  commentForm = new FormGroup({
-    text: new FormControl(''),
-  });
-
-  constructor(
-    private route: ActivatedRoute,
-    private forumService: ForumService,
-  ) { }
+  @Input() post;
+  constructor() { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.postId = params['id'];
-      this.forumService.getPost(this.postId).subscribe(post => {
-        this.post = post;
-      });
-    });
   }
 
-  onSubmitComment(): void {
-    this.forumService.createComment(this.commentForm.value.text, this.postId).subscribe(data => {
-      console.log(data);
-    });
-    this.commentForm.patchValue({ text: '' });
-  }
 }

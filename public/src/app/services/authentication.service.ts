@@ -57,7 +57,11 @@ export class AuthenticationService {
     }
 
     getUser(username: string) {
-        return this.http.get<any>(`${environment.apiUrl}/users/${username}`)
+        return this.http.get<any>(`${environment.apiUrl}/users/user/${username}`);
+    }
+
+    getUserPosts(username: string) {
+        return this.http.get<any>(`${environment.apiUrl}/users/user/${username}/posts`);
     }
 
 

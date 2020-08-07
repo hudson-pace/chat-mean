@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ForumService } from '../../../services/forum.service';
+import { ForumService } from '../../services/forum.service';
 
 
 @Component({

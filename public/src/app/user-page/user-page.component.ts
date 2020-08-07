@@ -9,6 +9,7 @@ import { AuthenticationService } from '../services/authentication.service';
 })
 export class UserPageComponent implements OnInit {
   user;
+  posts;
   constructor(
     private route: ActivatedRoute,
     private authenticationService: AuthenticationService
@@ -19,7 +20,10 @@ export class UserPageComponent implements OnInit {
       this.authenticationService.getUser(params['username']).subscribe(user => {
         this.user = user;
       });
-    })
+      this.authenticationService.getUserPosts(params['username']).subscribe(posts => {
+        this.posts = posts;
+      })
+    });
   }
 
 }
