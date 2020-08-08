@@ -22,6 +22,9 @@ enum Mode {
   styleUrls: ['./pong.component.css']
 })
 export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
+  usingTouchControls: boolean = false;
+  touchTarget: number;
+  enemyTouchTarget: number;
   updateInterval;
   Phase = Phase;
   Mode = Mode;
@@ -83,12 +86,15 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     this.context = this.gameCanvas.nativeElement.getContext('2d');
   }
   ngOnDestroy(): void {
-    this.sendGameUpdate('leave', undefined);
+    if (this.gameMode === Mode.OnlineMultiPlayer) {
+      this.sendGameUpdate('leave', undefined);
+    }
   }
 
 
   onKeyDown(event: any) {
     if (this.pressedKeys['key' + event.keyCode] !== undefined) {
+      this.usingTouchControls = false;
       this.pressedKeys['key' + event.keyCode] = true;
     }
   }
@@ -134,6 +140,33 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     this.endGame();
     this.sendGameUpdate('leave', undefined);
   }
+  onTouchStart(event) {
+    this.usingTouchControls = true;
+    let rect = event.target.getBoundingClientRect();
+    for (let touch of event.touches) {
+      if ((touch.clientY - rect.top) / this.stepSize < this.height / 2) {
+        this.enemyTouchTarget = (touch.clientX - rect.left) / this.stepSize;
+      }
+      else {
+        this.touchTarget = (touch.clientX - rect.left) / this.stepSize;
+      }
+    }
+  }
+  onTouchMove(event) {
+    this.usingTouchControls = true;
+    let rect = event.target.getBoundingClientRect();
+    for (let touch of event.touches) {
+      if ((touch.clientY - rect.top) / this.stepSize < this.height / 2) {
+        this.enemyTouchTarget = (touch.clientX - rect.left) / this.stepSize;
+      }
+      else {
+        this.touchTarget = (touch.clientX - rect.left) / this.stepSize;
+      }
+    }
+  }
+  onContextMenu() {
+    return false;
+  }
   score(winner) {
     winner.score++;
     this.ball.x = this.width / 2;
@@ -162,7 +195,7 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   startGame() {
-    this.onResize();
+    window.dispatchEvent(new Event('resize'));
     this.player.isWinner = false;
     this.enemy.isWinner = false;
     this.player.score = 0;
@@ -180,7 +213,9 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
   endGame() {
     clearInterval(this.updateInterval);
   }
+
   update() {
+
     if (this.countdown > 0) {
       this.countdown--;
     }
@@ -188,13 +223,26 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
       this.countdown--;
       this.ball.isMoving = true;
     }
+
     let oldX = this.player.x;
-    if (this.pressedKeys.key65) {
-      this.player.x -= 1;
+
+    if (this.usingTouchControls) {
+      if (this.touchTarget - 1 > this.player.x + this.player.width / 2) {
+        this.player.x += 1;
+      }
+      else if (this.touchTarget + 1 < this.player.x + this.player.width / 2) {
+        this.player.x -= 1;
+      }
     }
-    if (this.pressedKeys.key68) {
-      this.player.x += 1;
+    else {
+      if (this.pressedKeys.key65) {
+        this.player.x -= 1;
+      }
+      if (this.pressedKeys.key68) {
+        this.player.x += 1;
+      }
     }
+
     if (this.player.x < 0) {
       this.player.x = 0;
     }
@@ -206,19 +254,30 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     if (this.gameMode === Mode.SinglePlayer) {
-      if (this.ball.x > this.enemy.x + (this.enemy.width / 2)) {
+      // center enemy paddle on ball, with buffer to prevent flickering
+      if (this.ball.x > this.enemy.x + (this.enemy.width / 2) + 1) {
         this.enemy.x += .95;
       }
-      else {
+      else if (this.ball.x < this.enemy.x + (this.enemy.width / 2) - 1) {
         this.enemy.x -= .95;
       }
     }
     else if (this.gameMode === Mode.LocalMultiPlayer) {
-      if (this.pressedKeys.key37) {
-        this.enemy.x -= 1;
+      if (this.usingTouchControls) {
+        if (this.enemyTouchTarget - 1 > this.enemy.x + this.enemy.width / 2) {
+          this.enemy.x += 1;
+        }
+        else if (this.enemyTouchTarget + 1 < this.enemy.x + this.enemy.width / 2) {
+          this.enemy.x -= 1;
+        }
       }
-      else if (this.pressedKeys.key39) {
-        this.enemy.x += 1;
+      else {
+        if (this.pressedKeys.key37) {
+          this.enemy.x -= 1;
+        }
+        else if (this.pressedKeys.key39) {
+          this.enemy.x += 1;
+        }
       }
     }
 
@@ -252,7 +311,7 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
         this.ballHit();
       }
       else if (this.ball.y - this.ball.radius <= this.enemy.y + this.enemy.height && (this.ball.y - this.ball.radius) > this.enemy.y
-              && this.ball.x - this.ball.radius < this.enemy.x + this.enemy.width && this.ball.x + this.ball.radius > this.enemy.x) {
+              && this.ball.x - this.ball.radius < this.enemy.x + this.enemy.width && this.ball.x + this.ball.radius > this.enemy.x) { // enemy hits the ball
         this.ball.y = this.enemy.y + this.enemy.height + this.ball.radius;
         if (this.gameMode !== Mode.OnlineMultiPlayer) {
           this.ballHit();
@@ -273,7 +332,7 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
   draw() {
     this.context.clearRect(0, 0, this.gameCanvas.nativeElement.width, this.gameCanvas.nativeElement.height);
 
-    this.context.fillStyle = "#0095DD";
+    this.context.fillStyle = "#3aafa9";
     this.context.font = 8 * this.stepSize + 'px verdana';
     this.context.fillText(this.player.score.toString(), (this.width / 2) * this.stepSize, (this.height * this.heightUnit) - 3);
     this.context.fillText(this.enemy.score.toString(), (this.width / 2) * this.stepSize, 8 * this.stepSize)
@@ -306,7 +365,7 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case 'disconnected':
         this.gamePhase = Phase.PlayerNumberChoice;
-        this.endGame;
+        this.endGame();
         break;
       case 'move':
         this.enemy.x = message.data.x;

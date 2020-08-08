@@ -2,27 +2,44 @@ canvas {
     background-color: #feffff;
     margin-top: 4vh;
     height: 80vh;
-    width: 40vw;
+    width: 400px;
+    max-width: 100%;
 }
-canvas.inactive {
+.inactive {
     visibility: hidden;
-    position: absolute;
+    position: fixed;
     top: 0;
+    left: 0;
 }
 
 .menu {
-    margin-top: 4vh;
+    margin-top: 32px;
     background-color: #feffff;
-    width: 40vw;
+    width: 600px;
+    max-width: 100%;
     display: inline-block;
-    padding: 5vh 0;
+    padding: 48px 0;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, .3);
+    
+}
+.menu span.title {
+    display: block;
+    font-size: 4em;
+    color: #17252a;
+    
 }
 .menu span {
     margin-bottom: 4vh;
 }
 .menu button {
-    font-size: 1em;
-    font-family: verdana;
+    font-size: 1.5em;
     margin: 0 3vw;
     padding: 1vh 1vw;
+    font-family: verdana;
+    border: none;
+    background-color: rgba(58, 175, 169, 1);
+    color: #feffff;
+}
+.menu button:hover {
+    background-color: rgba(58, 175, 169, .9);
 }

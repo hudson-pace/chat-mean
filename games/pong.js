@@ -58,9 +58,11 @@ function leaveGame(user, io) {
         action: 'disconnected',
         data: undefined
     }
-    io.to(user.opponent.id).emit('game', response);
-    user.opponent.opponent = undefined;
-    user.opponent.game = undefined;
+    if (user.opponent) {
+        io.to(user.opponent.id).emit('game', response);
+        user.opponent.opponent = undefined;
+        user.opponent.game = undefined;
+    }
     user.opponent = undefined;
     user.game = undefined;
 }

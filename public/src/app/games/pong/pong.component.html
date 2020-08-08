@@ -1,4 +1,5 @@
 <div *ngIf="this.gamePhase === Phase.PlayerNumberChoice" class="menu">
+    <span class="title">Pong</span>
     <button (click)="onClickSinglePlayer()">SinglePlayer</button>
     <button (click)="onClickMultiPlayer()">MultiPlayer</button>
 </div>
@@ -20,7 +21,6 @@
     </div>
     <button (click)="onClickReturn()">Return</button>
 </div>
-<div class="gameWrapper">
-    <canvas #gameCanvas (keyup)="onKeyUp($event)" (keydown)="onKeyDown($event)" (blur)="onBlur()" tabindex='1' 
-        (window:resize)="onResize()" [class.inactive]="this.gamePhase !== Phase.MainGame"></canvas>
-</div>
+<canvas #gameCanvas (keyup)="onKeyUp($event)" (keydown)="onKeyDown($event)" (blur)="onBlur()" tabindex='1' 
+    [class.inactive]="this.gamePhase !== Phase.MainGame" (window:resize)="onResize()"  (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)" (contextmenu)="onContextMenu()"></canvas>
