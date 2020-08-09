@@ -29,9 +29,6 @@ export class AppComponent {
   logout() {
     this.authenticationService.logout();
   }
-  toggleChat() {
-    this.isChatActive = !this.isChatActive;
-  }
   toggleLogin() {
     this.isLoginActive = !this.isLoginActive;
     this.isPageDimmed = !this.isPageDimmed;

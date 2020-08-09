@@ -44,10 +44,7 @@
     </div>
   </nav>
   <router-outlet></router-outlet>
-  <app-chat [class.active] = 'isChatActive'></app-chat>
-  <div class="footer">
-    <a (click)="toggleChat()">chat</a>
-  </div>
+  <app-chat></app-chat>
 </div>
 <div class="page-content" [class.dimmed] = "this.isPageDimmed" (click)="clickOutside()"></div>
 

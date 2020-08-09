@@ -69,24 +69,6 @@ a:hover {
 .account-dropdown-wrapper {
     margin-right: 8vw;
 }
-.footer {
-    background-color: #feffff;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-.footer a {
-    margin: 0;
-    margin-right: 16em;
-    float: right;
-}
-
-app-chat {
-    display: none;
-}
-app-chat.active {
-    display: block;
-}
 
 .page-content {
     z-index: 0;

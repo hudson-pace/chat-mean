@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewChecked } from '@angular/core';
 
 import { ChatService } from '../services/chat.service'
 import { AuthenticationService } from '../services/authentication.service'
 import { Subscription } from 'rxjs';
-import { UrlHandlingStrategy } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private subscription: Subscription = new Subscription();
+  @ViewChild('messageList') private messageList: ElementRef;
+  active: boolean = false;
+  inputHeight = 1;
   messages = [];
   username = '';
-  message = '';
+  message = new FormControl('');
   constructor(private chatService: ChatService, private authenticationService: AuthenticationService) {
     this.subscription.add(this.authenticationService.getUserSubject().subscribe(x => {
       if (x) {
@@ -22,8 +25,8 @@ export class ChatComponent implements OnInit {
       }
     }));
 
-    this.subscription.add(this.chatService.receiveMessages().subscribe(x => this.messages.push(x)));
-    this.subscription.add(this.chatService.receiveNotices().subscribe(x => this.messages.push(x)));
+    this.subscription.add(this.chatService.receiveMessages().subscribe(x => this.addToMessageList(x)));
+    this.subscription.add(this.chatService.receiveNotices().subscribe(x => this.addToMessageList(x)));
   }
 
   ngOnInit(): void {
@@ -33,9 +36,13 @@ export class ChatComponent implements OnInit {
     this.subscription.unsubscribe();
   }
 
+  ngAfterViewChecked(): void {
+    this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight;
+  }
+
   send() {
-    if (this.message.startsWith('/')) {
-      var command = this.message.split(' ');
+    if (this.message.value.startsWith('/')) {
+      var command = this.message.value.split(' ');
       switch (command[0]) {
         case '/list':
           this.chatService.send('list_users', null);
@@ -83,8 +90,25 @@ export class ChatComponent implements OnInit {
       }
     }
     else {
-      this.chatService.send('chat message', { id: 0, text: this.message, from: this.username });
+      this.chatService.send('chat message', { id: 0, text: this.message.value, from: this.username });
     }
-    this.message = '';
+    this.message.setValue('');
+  }
+  onPressEnter(event) {
+    event.preventDefault();
+    this.inputHeight = 1;
+    this.send();
+  }
+  changeText(event) {
+    this.inputHeight = event.target.scrollHeight;
+    if (event.target.offsetHeight > event.target.scrollHeight) {
+      this.inputHeight -= 18;
+    }
+  }
+  toggleActive() {
+    this.active = !this.active;
+  }
+  addToMessageList(message): void {
+    this.messages.push(message);
   }
 }
