@@ -17,6 +17,7 @@ router.get('/', authorize(Role.Admin), getAll);
 router.get('/user/:username', getByName);
 router.get('/user/:username/refresh-tokens', authorize(), getRefreshTokens);
 router.get('/user/:username/posts', getPostsFromUser);
+router.put('/user/:username', authorize(), updateUser);
 
 module.exports = router;
 
@@ -113,9 +114,8 @@ function getAll(req, res, next) {
 }
 
 function getByName(req, res, next) {
-    console.log('here');
     userService.getUserByName(req.params.username)
-        .then(user => user ? res.json({ username: user.username, role: user.role }) : res.sendStatus(404))
+        .then(user => user ? res.json(user) : res.sendStatus(404))
         .catch(next);
 }
 
@@ -131,6 +131,12 @@ function getRefreshTokens(req, res, next) {
 function getPostsFromUser(req, res, next) {
     postService.getPostsFromUser(req.params.username)
         .then(posts => res.json(posts))
+        .catch(next);
+}
+
+function updateUser(req, res, next) {
+    userService.updateUser(req.user.id, req.params.username, req.body)
+        .then(success => res.json(success))
         .catch(next);
 }
 

@@ -1,0 +1,14 @@
+.container {
+    background-color: #feffff;
+    display: inline-block;
+    width: 800px;
+    max-width: 100%;
+    margin-top: 3vh;
+}
+form {
+    margin: 32px 0;
+}
+label {
+    margin-bottom: 16px;
+    display: block;
+}

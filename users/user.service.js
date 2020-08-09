@@ -17,7 +17,8 @@ module.exports = {
     getAll,
     getById,
     getRefreshTokens,
-    getUserByName
+    getUserByName,
+    updateUser,
 };
 
 async function authenticate({ username, password, ipAddress}) {
@@ -146,6 +147,20 @@ async function getRefreshToken(token) {
     return refreshToken;
 }
 
+async function updateUser(userId, username, updateParams) {
+    let user = await getUserByName(username);
+    if (user.id === userId) {
+        if (updateParams.password) {
+            updateParams.passwordHash = bcrypt.hashSync(updateParams.password, 10);
+        }
+        await User.updateOne({ '_id': userId }, updateParams);
+        return { success: true };
+    }
+    else {
+        return { message: "Unauthorized" };
+    }
+}
+
 function generateJwtToken(user) {
     return jwt.sign({sub: user.id, id: user.id}, config.secret, {expiresIn: '15m'});
 }
@@ -164,6 +179,6 @@ function randomTokenString() {
 }
 
 function basicDetails(user) {
-    var {id, username, role} = user;
-    return {id, username, role};
+    var {id, username, role, description} = user;
+    return {id, username, role, description};
 }

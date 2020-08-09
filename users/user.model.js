@@ -8,6 +8,7 @@ var schema = new Schema({
     passwordHash: {type: String, required: true},
     role: {type: String, required: true},
     votes: [{ type: mongoose.Types.ObjectId }],
+    description: { type: String },
 });
 
 schema.set('toJSON', {

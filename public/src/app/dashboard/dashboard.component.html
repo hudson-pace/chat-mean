@@ -1,2 +1,17 @@
 <div class="container">
+    <form [formGroup]="updateUserForm" (ngSubmit)="onSubmit()">
+        <label>
+            new password:
+            <input formControlName="password">
+        </label>
+        <label>
+            description:
+            <input formControlName="description">
+        </label>
+        <button type="submit">submit</button>
+    </form>
+
+    <div *ngIf="user.role === 'Admin'">
+        <div *ngFor="let user of allUsers">{{ user.username }}<button (click)="deleteUser(user)">Delete</button></div>
+    </div>
 </div>

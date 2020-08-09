@@ -64,6 +64,18 @@ export class AuthenticationService {
         return this.http.get<any>(`${environment.apiUrl}/users/user/${username}/posts`);
     }
 
+    updateUser(username: string, updateParams) {
+        return this.http.put<any>(`${environment.apiUrl}/users/user/${username}`, updateParams, { withCredentials: true });
+    }
+
+    getAllUsers() {
+        return this.http.get<any>(`${environment.apiUrl}/users`, { withCredentials: true });
+    }
+    
+    deleteUser(username: string) {
+        return this.http.delete<any>(`${environment.apiUrl}/users/user/${username}`);
+    }
+
 
     // helper methods
 
