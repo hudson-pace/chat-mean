@@ -2,6 +2,7 @@
     <div class="post">
         <h1>{{ post.text }}</h1>
         <h4>{{ post.author }}</h4>
+        <div><button (click)="upvotePost()">Upvote</button></div>
     </div>
     <div class="comment-section">
         <h2>Comments</h2>

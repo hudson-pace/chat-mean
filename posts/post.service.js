@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Post, Comment } = require('../helpers/db');
+const { Post, Comment, User } = require('../helpers/db');
 const { getUserByName, getById } = require('../users/user.service');
 
 module.exports = {
@@ -10,7 +10,9 @@ module.exports = {
     createComment,
     getChildrenOfComment,
     getRealPostId,
-    getPostsFromUser
+    getPostsFromUser,
+    upvotePost,
+    upvoteComment
 }
 
 async function createPost(author, text, tags) {
@@ -32,20 +34,30 @@ async function createComment(author, text, parentId) {
     return true;
 }
 
-async function getChildrenOfComment(commentId) {
-    return await Comment.find({ 'parent': commentId }).populate('author');
+async function getChildrenOfComment(commentId, userId) {
+    let comments = await Comment.find({ 'parent': commentId }).populate('author');
+    let user = await User.findOne({ '_id': userId });
+    return comments.map(comment => getCommentDetails(comment, user));
 }
 
-async function getAllPosts() {
+async function getAllPosts(userId) {
+    let user;
+    if (userId) {
+        user = await User.findOne({ '_id': userId });
+    }
     var posts = await Post.find().populate('author');
-    return posts.map(x => getPostDetails(x));
+    return posts.map(post => getPostDetails(post, user));
 }
 
-async function getPostById(id) {
+async function getPostById(id, userId) {
     var post = await Post.findOne({ 'postId': id }).populate('author');
     var comments = await Comment.find({ 'parent': post._id }).populate('author');
-    var postDetails = getPostDetails(post);
-    postDetails.comments = comments;
+    let user;
+    if (userId) {
+        user = await User.findOne({ '_id': userId });
+    }
+    var postDetails = getPostDetails(post, user);
+    postDetails.comments = comments.map(comment => getCommentDetails(comment, user));
     return postDetails;
 }
 
@@ -72,8 +84,50 @@ async function getPostsFromUser(username) {
     return await Post.find({ 'author': user._id });
 }
 
-function getPostDetails(post) {
-    var { author, text, datePosted, votes, tags, postId } = post;
+function getPostDetails(post, user) {
+    var { author, text, datePosted, votes, tags, postId, _id} = post;
     author = author.username;
-    return { author, text, datePosted, votes, tags, postId };
+    let hasBeenUpvoted;
+    if (user) {
+        hasBeenUpvoted = user.votes.includes(post._id);
+    }
+    return { author, text, datePosted, votes, tags, postId, _id, hasBeenUpvoted};
+}
+function getCommentDetails(comment, user) {
+    var { author, text, datePosted, votes, _id } = comment;
+    author = author.username;
+    let hasBeenUpvoted;
+    if (user) {
+        hasBeenUpvoted = user.votes.includes(comment._id);
+    }
+    return { author, text, datePosted, votes, _id, hasBeenUpvoted };
+}
+
+async function upvotePost(userId, postId) {
+    let post = await Post.findOne({ 'postId': postId });
+    let user = await User.findOne({ '_id': userId });
+    if (user.votes.includes(post._id)) {
+        return { success: false, error: "already upvoted" };
+    }
+    else {
+        user.votes.push(post._id);
+        await user.save();
+        post.votes += 1;
+        await post.save();
+        return { success: true };
+    }
+}
+async function upvoteComment(userId, commentId) {
+    let user = await User.findOne({ '_id': userId });
+    if (user.votes.includes(comment_id)) {
+        return { success: false, error: "already upvoted" };
+    }
+    else {
+        let comment = await Post.findOne({ '_id': commentId });
+        comment.votes += 1;
+        await comment.save();
+        user.votes.push(comment_id);
+        await user.save();
+        return { success: true };
+    }
 }

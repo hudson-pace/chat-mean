@@ -36,4 +36,8 @@ export class PostPageComponent implements OnInit {
     });
     this.commentForm.patchValue({ text: '' });
   }
+
+  upvotePost(): void {
+    this.forumService.upvotePost(this.postId).subscribe(response => console.log(response));
+  }
 }

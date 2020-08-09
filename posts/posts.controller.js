@@ -2,19 +2,24 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('@hapi/joi');
 const authorize = require('../middleware/authorize');
+const tryToAuthorize = require('../middleware/authorize');
 const validateRequest = require('../middleware/validate-request');
 const { getById } = require('../users/user.service');
 const postService = require('./post.service');
 const { Post } = require('../helpers/db');
 const Role = require('../helpers/role');
+const { secret } = require('../config');
+const jwt = require('express-jwt');
 
 //routes
 router.post('/', authorize(), createPostSchema, createPost);
 router.post('/:id', authorize(), createCommentSchema, createComment);
 router.post('/comments/:id', authorize(), createCommentSchema, createCommentReply);
-router.get('/', getAllPosts);
-router.get('/:id', getPostById);
-router.get('/comments/:id', getChildrenOfComment);
+router.post('/:id/upvote', authorize(), upvotePost);
+router.post('/comments/:id/upvote', authorize(), upvoteComment);
+router.get('/', jwt({secret, algorithms: ['HS256']}), getAllPosts, getAllPostsWithUser);
+router.get('/:id', jwt({secret, algorithms: ['HS256']}), getPostById, getPostByIdWithUser);
+router.get('/comments/:id', jwt({secret, algorithms: ['HS256']}), getChildrenOfComment, getChildrenOfCommentWithUser);
 router.delete('/:id', authorize(), deletePost);
 
 module.exports = router;
@@ -69,20 +74,36 @@ function createCommentReply(req, res, next) {
         })
         .catch(next);
 }
-function getChildrenOfComment(req, res, next) {
-    postService.getChildrenOfComment(req.params.id)
+
+function getChildrenOfComment(err, req, res, next) {
+    postService.getChildrenOfComment(req.params.id, undefined)
+        .then(comments => res.json(comments))
+        .catch(next);
+}
+function getChildrenOfCommentWithUser(req, res, next) {
+    postService.getChildrenOfComment(req.params.id, req.user.id)
         .then(comments => res.json(comments))
         .catch(next);
 }
 
-function getAllPosts(req, res, next) {
-    postService.getAllPosts()
+function getAllPosts(err, req, res, next) {
+    postService.getAllPosts(undefined)
+        .then(posts => res.json(posts))
+        .catch(next);
+}
+function getAllPostsWithUser(req, res, next) {
+    postService.getAllPosts(req.user.id)
         .then(posts => res.json(posts))
         .catch(next);
 }
 
-function getPostById(req, res, next) {
-    postService.getPostById(req.params.id)
+function getPostById(err, req, res, next) {
+    postService.getPostById(req.params.id, undefined)
+        .then(post => res.json(post))
+        .catch(next);
+}
+function getPostByIdWithUser(req, res, next) {
+    postService.getPostById(req.params.id, req.user.id)
         .then(post => res.json(post))
         .catch(next);
 }
@@ -99,5 +120,16 @@ function deletePost(req, res, next) {
                 return res.status(401).json({message: 'Unauthorized'});
             }
         })
+        .catch(next);
+}
+
+function upvotePost(req, res, next) {
+    postService.upvotePost(req.user.id, req.params.id)
+        .then(success => res.json(success))
+        .catch(next);
+}
+function upvoteComment(req, res, next) {
+    postService.upvoteComment(req.user.id, req.params.id)
+        .then(success => res.json(success)) 
         .catch(next);
 }

@@ -17,4 +17,8 @@ export class CommentComponent implements OnInit {
   ngOnInit(): void {
     this.forumService.getCommentReplies(this.comment._id).subscribe(children => this.childComments = children);
   }
+
+  upvoteComment(): void {
+    this.forumService.upvoteComment(this.comment._id).subscribe(response => console.log(response));
+  }
 }

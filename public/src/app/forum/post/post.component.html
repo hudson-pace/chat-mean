@@ -1,4 +1,7 @@
 <div class="post" [routerLink]="['/forum/posts/', post.postId]">
-    <div class="post-info">posted by {{ post.author }}. tags: <span *ngFor="let tag of post.tags">{{ tag }}, </span></div>
+    <div class="post-info">
+        <div>votes: {{ post.votes }}</div>
+        posted by {{ post.author }}. tags: <span *ngFor="let tag of post.tags">{{ tag }}, </span>
+    </div>
     {{ post.text }}
 </div>

@@ -34,4 +34,10 @@ export class ForumService {
   createCommentReply(text: string, commentId: string) {
     return this.httpClient.post<any>(`${environment.apiUrl}/posts/comments/${commentId}`, { text: text }, { withCredentials: true });
   }
+  upvotePost(postId: string) {
+    return this.httpClient.post<any>(`${environment.apiUrl}/posts/${postId}/upvote`, {}, { withCredentials: true });
+  }
+  upvoteComment(commentId: string) {
+    return this.httpClient.post<any>(`${environment.apiUrl}/posts/comments/${commentId}/upvote`, {}, { withCredentials: true });
+  }
 }
