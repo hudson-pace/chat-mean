@@ -14,8 +14,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private subscription: Subscription = new Subscription();
   @ViewChild('messageList') private messageList: ElementRef;
   active: boolean = false;
+  manualScrolling: boolean = false;
   inputHeight = 1;
   messages = [];
+  oldMessages = [];
   username = '';
   message = new FormControl('');
   constructor(private chatService: ChatService, private authenticationService: AuthenticationService) {
@@ -37,7 +39,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight;
+    if (this.messages.length !== this.oldMessages.length && !this.manualScrolling) {
+      this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight;
+      this.oldMessages = this.messages.slice();
+    }
   }
 
   send() {
@@ -107,6 +112,15 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
   toggleActive() {
     this.active = !this.active;
+    this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight
+  }
+  onScroll() {
+    if (this.messageList.nativeElement.scrollTop === this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight) {
+      this.manualScrolling = false;
+    }
+    else {
+      this.manualScrolling = true;
+    }
   }
   addToMessageList(message): void {
     this.messages.push(message);

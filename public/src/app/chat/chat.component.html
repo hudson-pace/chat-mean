@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div #messageList class="chatbox-display">
+    <div #messageList class="chatbox-display" (scroll)="onScroll()">
         <ul>
             <li class="message" *ngFor="let message of messages" [class.sent]="message.from === username">
                 {{ message.from }}: {{ message.text }}
