@@ -22,6 +22,12 @@ enum Mode {
   styleUrls: ['./pong.component.css']
 })
 export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
+  playerNumOptions = ["SinglePlayer", "MultiPlayer"];
+  multiPlayerOptions = ["Local", "Online"];
+  gameOverOptions = ["Return"];
+  gameTitle = "Pong";
+  waitingText = "Waiting for a match...";
+  gameOverText: string;
   usingTouchControls: boolean = false;
   touchTarget: number;
   enemyTouchTarget: number;
@@ -140,6 +146,25 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     this.endGame();
     this.sendGameUpdate('leave', undefined);
   }
+  onOptionChoice(event) {
+    switch (event) {
+      case "SinglePlayer":
+        this.onClickSinglePlayer();
+        break;
+      case "MultiPlayer":
+        this.onClickMultiPlayer();
+        break;
+      case "Local":
+        this.onClickLocalMultiPlayer();
+        break;
+      case "Online":
+        this.onClickOnlineMultiPlayer();
+        break;
+      case "Return":
+        this.onClickReturn();
+        break;
+    }
+  }
   onTouchStart(event) {
     this.usingTouchControls = true;
     let rect = event.target.getBoundingClientRect();
@@ -182,6 +207,22 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     if (winner.score >= 7) {
       this.endGame();
       winner.isWinner = true;
+      if (this.gameMode === Mode.LocalMultiPlayer) {
+        if (this.player.isWinner) {
+          this.gameOverText = "Player 1 wins!";
+        }
+        else {
+          this.gameOverText = "Player 2 wins!";
+        }
+      }
+      else {
+        if (this.player.isWinner) {
+          this.gameOverText = "You win!";
+        }
+        else {
+          this.gameOverText = "You lose.";
+        }
+      }
       this.gamePhase = Phase.GameOver;
     }
     

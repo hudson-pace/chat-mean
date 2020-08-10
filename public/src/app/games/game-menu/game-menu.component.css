@@ -1,0 +1,31 @@
+.menu {
+    margin-top: 32px;
+    background-color: #feffff;
+    width: 600px;
+    max-width: 100%;
+    display: inline-block;
+    padding: 48px 0;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, .3);
+    
+}
+.title {
+    font-size: 4em;
+    color: #17252a;
+    margin-bottom: 4vh;
+}
+.options-wrapper {
+    display: inline-block;
+}
+.menu button {
+    font-size: 1.5em;
+    margin: 1vh 0;
+    padding: 2vh 2vw;
+    font-family: verdana;
+    border: none;
+    background-color: rgba(58, 175, 169, 1);
+    color: #feffff;
+    width: 100%;
+}
+.menu button:hover {
+    background-color: rgba(58, 175, 169, .9);
+}

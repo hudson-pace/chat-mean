@@ -31,6 +31,11 @@ export class BattleshipComponent implements OnDestroy {
   Phase = Phase;
   phase: Phase = Phase.Start;
   win: boolean;
+  gameTitle = "Battleship";
+  waitingForMatchText = "Waiting for a match...";
+  gameOverText: string;
+  playerNumOptions = ["SinglePlayer", "MultiPlayer"];
+  gameOverOptions = ["Rematch", "Return"];
   private subscription: Subscription = new Subscription();
   private playerBoard: Square[][];
   private enemyBoard: Square[][];
@@ -44,7 +49,7 @@ export class BattleshipComponent implements OnDestroy {
   private currentShip: number;
   private orientation: boolean = false;
   private mode: Mode;
-  private isPlayerTurn: boolean = false;
+  isPlayerTurn: boolean = false;
   
   constructor(private chatService: ChatService) {
     this.subscription.add(this.chatService.receiveGameUpdates().subscribe(x => {
@@ -161,6 +166,7 @@ export class BattleshipComponent implements OnDestroy {
     this.placeEnemyBoats();
     this.phase = Phase.Setup;
     this.mode = Mode.Singleplayer;
+    this.isPlayerTurn = true;
   }
 
   onClickMultiPlayer() {
@@ -174,6 +180,23 @@ export class BattleshipComponent implements OnDestroy {
       }
       this.sendUpdate('join_queue', null);
     }, 500); // wait to avoid flash of queue dialog
+  }
+
+  onChoice(event) {
+    switch(event) {
+      case "SinglePlayer":
+        this.onClickSinglePlayer();
+        break;
+      case "MultiPlayer":
+        this.onClickMultiPlayer();
+        break;
+      case "Rematch":
+        this.onClickRematch();
+        break;
+      case "Return":
+        this.onClickReturn();
+        break;
+    }
   }
 
   changeSquares(board: Square[][], x: number, y: number, size: number, orientation: boolean, selecting: boolean) {
@@ -291,9 +314,11 @@ export class BattleshipComponent implements OnDestroy {
       if (boats.length === 0) {
         if (board === this.enemyBoard) {
           this.win = true;
+          this.gameOverText = "You win!";
         }
         else {
           this.win = false;
+          this.gameOverText = "You lose.";
           if (this.mode === Mode.Multiplayer) {
             this.sendUpdate('game_over', null);
           }
@@ -371,6 +396,7 @@ export class BattleshipComponent implements OnDestroy {
         break;
       case 'game_over':
         this.win = true;
+        this.gameOverText = "You Win!";
         this.phase = Phase.End;
         break;
       case 'disconnected':

@@ -1,17 +1,21 @@
-<div class="title">battleship</div>
+<app-game-menu *ngIf="phase === Phase.Start" [title]="gameTitle" [options]="playerNumOptions" 
+    (choiceEvent)="onChoice($event)"></app-game-menu>
+<app-game-menu *ngIf="phase === Phase.WaitingForMatch" [title]="waitingForMatchText"></app-game-menu>
+<app-game-menu *ngIf="phase === Phase.End" [title]="gameOverText" [options]="gameOverOptions" 
+    (choiceEvent)="onChoice($event)"></app-game-menu>
 
-<div *ngIf="phase === Phase.Start">
-    <div>
-        <div>
-            <button (click)="onClickSinglePlayer()">singleplayer</button>
-            <button (click)="onClickMultiPlayer()">multiplayer</button>
+<div *ngIf="phase === Phase.Setup || phase === Phase.MainGame" class="game-wrapper">
+    <div class="game-info">
+        <div *ngIf="phase === Phase.Setup">
+            Place your boats! Left click to place, right click to rotate.
+        </div>
+        <div *ngIf="phase === Phase.MainGame">
+            <span *ngIf="isPlayerTurn">Your turn</span>
+            <span *ngIf="!isPlayerTurn">Their turn</span>
         </div>
     </div>
-</div>
-
-<div *ngIf="phase !== Phase.Start && phase !== Phase.WaitingForMatch">
-    <div *ngIf="phase !== Phase.Setup">
-        <table>
+    <div>
+        <table [class.active]="phase === Phase.MainGame && isPlayerTurn">
             <tr *ngFor="let row of enemyBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
                     'has-boat': square.hasBoat && square.isHit,
@@ -23,9 +27,8 @@
             </tr>
         </table>
     </div>
-
     <div>
-        <table>
+        <table [class.active]="phase === Phase.Setup || !isPlayerTurn">
             <tr *ngFor="let row of playerBoard; index as i">
                 <td *ngFor="let square of row; index as j" [ngClass]="{
                     'has-boat': square.hasBoat,
@@ -43,14 +46,4 @@
             </tr>
         </table>
     </div>
-</div>
-
-<div *ngIf="phase === Phase.End" class="popup-message">
-    <span *ngIf="win" class="end-message">you win.</span>
-    <span *ngIf="!win" class="end-message">you lose.</span>
-    <button (click)="onClickRematch()">rematch</button>
-    <button (click)="onClickReturn()">return to start</button>
-</div>
-<div *ngIf="phase === Phase.WaitingForMatch" class="popup-message">
-    <span>waiting for a match...</span>
 </div>

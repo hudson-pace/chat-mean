@@ -8,12 +8,23 @@ button {
     margin: 2em;
 }
 
+.game-wrapper {
+    margin-top: 4vh;
+    display: inline-block;
+    padding: 2vh 2vw;
+    background-color: #feffff;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, .3);
+    width: 500px;
+    padding-bottom: 8vh;
+}
 table {
     background-color: black;
     display: inline-block;
-    margin-top: 1em;
     border-spacing: 0;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5), 0 5px 5px 0 rgba(0, 0, 0, 0.4);
+    margin-top: 2vh;
+}
+.game-info {
+    padding: 2vh 0;
 }
 
 td {
@@ -37,8 +48,11 @@ td.is-hit.has-boat.is-sunk {
 .enemy {
     height: 100%;
 }
-.enemy:hover {
+.active tr .enemy:hover {
     background-color: rgba(0, 0, 0, .2);
+}
+.active {
+    box-shadow: 0 0 2px 2px rgba(0, 0, 255, .5);
 }
 
 .selected {
@@ -51,22 +65,4 @@ td.is-hit.has-boat.is-sunk {
 
 .enemy-clicked {
     background-color: yellow;
-}
-
-.popup-message {
-    display: inline-block;
-    height: 20em;
-    width: 40em;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -10em;
-    margin-left: -20em;
-    background-color: white;
-}
-
-.popup-message span {
-    font-size: 3em;
-    margin-top: 1em;
-    display: block;
 }

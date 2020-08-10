@@ -25,6 +25,7 @@ import { PostPageComponent } from './forum/post-page/post-page.component';
 import { CommentComponent } from './forum/comment/comment.component';
 import { PostComponent } from './forum/post/post.component';
 import { PongComponent } from './games/pong/pong.component';
+import { GameMenuComponent } from './games/game-menu/game-menu.component';
 
 var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
@@ -44,7 +45,8 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     PostPageComponent,
     CommentComponent,
     PostComponent,
-    PongComponent
+    PongComponent,
+    GameMenuComponent
   ],
   imports: [
     BrowserModule,

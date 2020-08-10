@@ -1,26 +1,10 @@
-<div *ngIf="this.gamePhase === Phase.PlayerNumberChoice" class="menu">
-    <span class="title">Pong</span>
-    <button (click)="onClickSinglePlayer()">SinglePlayer</button>
-    <button (click)="onClickMultiPlayer()">MultiPlayer</button>
-</div>
-<div *ngIf="this.gamePhase === Phase.MultiPlayerOptions" class="menu">
-    <button (click)="onClickLocalMultiPlayer()">Local</button>
-    <button (click)="onClickOnlineMultiPlayer()">Online</button>
-</div>
-<div *ngIf="this.gamePhase === Phase.WaitingForMatch" class="menu">
-    Waiting...
-</div>
-<div *ngIf="this.gamePhase === Phase.GameOver" class="menu">
-    <div *ngIf="this.gameMode !== Mode.LocalMultiPlayer">
-        <span *ngIf="this.player.isWinner">You Win!</span>
-        <span *ngIf="!this.player.isWinner">You Lose.</span>
-    </div>
-    <div *ngIf="this.gameMode === Mode.LocalMultiPlayer">
-        <span *ngIf="this.player.isWinner">Player 1 Wins!</span>
-        <span *ngIf="this.enemy.isWinner">Player 2 Wins!</span>
-    </div>
-    <button (click)="onClickReturn()">Return</button>
-</div>
+<app-game-menu *ngIf="gamePhase === Phase.PlayerNumberChoice"
+    [title]="gameTitle" [options]="playerNumOptions" (choiceEvent)="onOptionChoice($event)"></app-game-menu>
+<app-game-menu *ngIf="gamePhase === Phase.MultiPlayerOptions"
+    [options]="multiPlayerOptions" (choiceEvent)="onOptionChoice($event)"></app-game-menu>
+<app-game-menu *ngIf="gamePhase === Phase.WaitingForMatch" [title]="waitingText"></app-game-menu>
+<app-game-menu *ngIf="gamePhase === Phase.GameOver" [title]="gameOverText" [options]="gameOverOptions"
+    (choiceEvent)="onOptionChoice($event)"></app-game-menu>
 <canvas #gameCanvas (keyup)="onKeyUp($event)" (keydown)="onKeyDown($event)" (blur)="onBlur()" tabindex='1' 
-    [class.inactive]="this.gamePhase !== Phase.MainGame" (window:resize)="onResize()"  (touchstart)="onTouchStart($event)"
+    [class.inactive]="gamePhase !== Phase.MainGame" (window:resize)="onResize()"  (touchstart)="onTouchStart($event)"
     (touchmove)="onTouchMove($event)" (contextmenu)="onContextMenu()"></canvas>
