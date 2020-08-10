@@ -10,6 +10,7 @@ const { Post } = require('../helpers/db');
 const Role = require('../helpers/role');
 const { secret } = require('../config');
 const jwt = require('express-jwt');
+const url = require('url');
 
 //routes
 router.post('/', authorize(), createPostSchema, createPost);
@@ -87,12 +88,14 @@ function getChildrenOfCommentWithUser(req, res, next) {
 }
 
 function getAllPosts(err, req, res, next) {
-    postService.getAllPosts(undefined)
+    let queryObject = url.parse(req.url, true).query;
+    postService.getAllPosts(undefined, queryObject)
         .then(posts => res.json(posts))
         .catch(next);
 }
 function getAllPostsWithUser(req, res, next) {
-    postService.getAllPosts(req.user.id)
+    let queryObject = url.parse(req.url, true).query;
+    postService.getAllPosts(req.user.id, queryObject)
         .then(posts => res.json(posts))
         .catch(next);
 }

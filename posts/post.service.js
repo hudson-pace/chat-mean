@@ -40,12 +40,27 @@ async function getChildrenOfComment(commentId, userId) {
     return comments.map(comment => getCommentDetails(comment, user));
 }
 
-async function getAllPosts(userId) {
+async function getAllPosts(userId, params) {
     let user;
     if (userId) {
         user = await User.findOne({ '_id': userId });
     }
-    var posts = await Post.find().populate('author');
+    let quantity = params.quantity;
+    if (!quantity) {
+        quantity = 10;
+    }
+    else if (quantity > 50) {
+        quantity = 50;
+    }
+    let postQuery;
+    if (params.tags && params.tags.length > 0) {
+        postQuery = Post.find({ tags: { $all : params.tags }});
+    }
+    else {
+        postQuery = Post.find({ });
+    }
+    postQuery = postQuery.sort({ datePosted: -1 }).limit(quantity).populate('author');
+    var posts = await postQuery;
     return posts.map(post => getPostDetails(post, user));
 }
 
@@ -86,7 +101,9 @@ async function getPostsFromUser(username) {
 
 function getPostDetails(post, user) {
     var { author, text, datePosted, votes, tags, postId, _id} = post;
-    author = author.username;
+    if (author) {
+        author = author.username;
+    }
     let hasBeenUpvoted;
     if (user) {
         hasBeenUpvoted = user.votes.includes(post._id);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Post } from '../models/forum/post';
 import { map } from 'rxjs/operators';
@@ -19,8 +19,8 @@ export class ForumService {
       tags: tags
     }, { withCredentials: true });
   }
-  getAllPosts() {
-    return this.httpClient.get<Post[]>(`${environment.apiUrl}/posts`);
+  getAllPosts(tagList: string[]) {
+    return this.httpClient.get<Post[]>(`${environment.apiUrl}/posts`, { params: { "tags": tagList } });
   }
   getPost(postId) {
     return this.httpClient.get<Post>(`${environment.apiUrl}/posts/${postId}`);

@@ -13,10 +13,12 @@ export class PostComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if (!this.post.author) {
+      this.post.author = "[deleted]";
+    }
   }
 
   upvotePost(): void {
-    console.log(this.post);
     this.forumService.upvotePost(this.post.postId).subscribe(response => console.log(response));
   }
 

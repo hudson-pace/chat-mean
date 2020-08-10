@@ -14,12 +14,22 @@ export class ForumComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getPosts();
   }
 
-
   getPosts() {
-    this.forumService.getAllPosts().subscribe((posts: Post[]) => {
+    this.forumService.getAllPosts([]).subscribe((posts: Post[]) => {
       this.posts = posts;
     });
   }
+
+  searchByTags(tagInput: string) {
+    let tagList = tagInput.split(', ');
+    console.log(tagList);
+    this.forumService.getAllPosts(tagList).subscribe((posts: Post[]) => {
+      console.log(posts);
+      this.posts = posts;
+    })
+  }
+
 }
