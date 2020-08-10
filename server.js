@@ -103,6 +103,11 @@ io.on('connection', function(socket) {
 			}
 		}
 	});
+
+	socket.on('logout', function() {
+		console.log(user.username + ' logged out.');
+		user.username = 'anon_' + nameCounter;
+	})
 	
 	socket.on('authenticate', function(token) {
 		jwt.verify(token, secret, async function(err, decodedToken) {

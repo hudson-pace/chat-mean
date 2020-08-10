@@ -25,9 +25,7 @@ export class ForumComponent implements OnInit {
 
   searchByTags(tagInput: string) {
     let tagList = tagInput.split(', ');
-    console.log(tagList);
     this.forumService.getAllPosts(tagList).subscribe((posts: Post[]) => {
-      console.log(posts);
       this.posts = posts;
     })
   }

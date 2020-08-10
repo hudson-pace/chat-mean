@@ -19,10 +19,10 @@ const routes: Routes = [
   { path: 'games/battleship', component: BattleshipComponent },
   { path: 'games/pong', component: PongComponent },
   { path: 'forum', component: ForumComponent },
-  { path: 'forum/create-post', component: CreatePostComponent, canActivate: [ AuthGuard ]},
+  { path: 'forum/create-post', component: CreatePostComponent, canActivate: [ AuthGuard ] },
   { path: 'forum/posts/:id', component: PostPageComponent },
   { path: 'users/:username', component: UserPageComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [ AuthGuard ] },
   { path: '**', redirectTo: '' } // default to home
 ];
 

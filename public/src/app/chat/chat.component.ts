@@ -14,6 +14,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private subscription: Subscription = new Subscription();
   @ViewChild('messageList') private messageList: ElementRef;
   active: boolean = false;
+  newMessages: boolean = false;
   manualScrolling: boolean = false;
   inputHeight = 1;
   messages = [];
@@ -24,6 +25,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.subscription.add(this.authenticationService.getUserSubject().subscribe(x => {
       if (x) {
         this.username = x.username;
+      }
+      else {
+        this.username = '';
       }
     }));
 
@@ -112,11 +116,15 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
   toggleActive() {
     this.active = !this.active;
-    this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight
+    this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight;
+    if (this.active) {
+      this.newMessages = false;
+    }
   }
   onScroll() {
     if (this.messageList.nativeElement.scrollTop === this.messageList.nativeElement.scrollHeight - this.messageList.nativeElement.clientHeight) {
       this.manualScrolling = false;
+      this.newMessages = false;
     }
     else {
       this.manualScrolling = true;
@@ -124,5 +132,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
   addToMessageList(message): void {
     this.messages.push(message);
+    if (!this.active || this.manualScrolling) {
+      this.newMessages = true;
+    }
   }
 }

@@ -2,7 +2,7 @@
 
     <div class="chatbox-header-container">
         <div class="chatbox-header" [class.active]="active">
-            <h3><i class="fa fa-comments"></i>Chat</h3>
+            <h3><i class="fa fa-comments"></i>Chat<span [class.new-messages]="newMessages"></span></h3>
             <button (click)="toggleActive()">
                 <i class="fa" [class.fa-chevron-up]="!active" [class.fa-chevron-down]="active"></i>
             </button>

@@ -13,6 +13,9 @@ export class ChatService {
             if (x && x.jwtToken) {
                 this.socket.emit('authenticate', x.jwtToken);
             }
+            else if (!x) {
+                this.socket.emit('logout', undefined);
+            }
         });
     }
 

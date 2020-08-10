@@ -44,7 +44,7 @@ export class AuthenticationService {
         this.http.post<any>(`${environment.apiUrl}/users/revoke-token`, {}, { withCredentials: true }).subscribe();
         this.stopRefreshTokenTimer();
         this.userSubject.next(null);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
     }
 
     refreshToken() {
