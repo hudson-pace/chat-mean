@@ -22,53 +22,56 @@ enum Mode {
   styleUrls: ['./pong.component.css']
 })
 export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('gameCanvas', {static: false}) gameCanvas: ElementRef;
+  Phase = Phase;
+  Mode = Mode;
   playerNumOptions = ["SinglePlayer", "MultiPlayer"];
   multiPlayerOptions = ["Local", "Online"];
   gameOverOptions = ["Return"];
   gameTitle = "Pong";
   waitingText = "Waiting for a match...";
   gameOverText: string;
-  usingTouchControls: boolean = false;
-  touchTarget: number;
-  enemyTouchTarget: number;
-  updateInterval;
-  Phase = Phase;
-  Mode = Mode;
   gamePhase: Phase = Phase.PlayerNumberChoice;
   gameMode: Mode;
-  subscription: Subscription = new Subscription();
-  @ViewChild('gameCanvas', {static: false}) gameCanvas: ElementRef;
-  context: CanvasRenderingContext2D;
-  stepSize: number;
-  heightUnit: number;
-  width: number = 100;
-  height: number = 200;
-  countdown: number = 100;
-  pressedKeys = {
+
+  private usingTouchControls: boolean = false;
+  private touchTarget: number;
+  private enemyTouchTarget: number;
+  private updateInterval;
+  private subscription: Subscription = new Subscription();
+  private context: CanvasRenderingContext2D;
+  private stepSize: number;
+  private heightUnit: number;
+  private width: number = 100;
+  private height: number = 200;
+  private countdown: number = 100;
+  private pressedKeys = {
     key37: false,
     key39: false,
     key65: false,
     key68: false
   }
-  player = {
+  private player = {
     x: 0,
     y: 0,
     dx: 0,
+    oldDx: 0,
     width: 16,
     height: 4,
     score: 0,
     isWinner: false,
   }
-  enemy = {
+  private enemy = {
     x: 0,
     y: 0,
     dx: 0,
+    oldDx: 0,
     width: 16,
     height: 4,
     score: 0,
     isWinner: false,
   }
-  ball = {
+  private ball = {
     x: this.width / 2,
     y: this.height / 2,
     dx: 0,
@@ -76,6 +79,7 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     radius: 2,
     isMoving: false,
   }
+  
   constructor(
     private chatService: ChatService,
   ) {
@@ -109,6 +113,37 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pressedKeys['key' + event.keyCode] = false;
     }
   }
+
+  calculateDx() {
+    if (this.usingTouchControls) {
+      if (this.touchTarget - 1 > this.player.x + (this.player.width / 2)) {
+        this.player.dx = 1;
+      }
+      else if (this.touchTarget + 1 < this.player.x + (this.player.width / 2)) {
+        this.player.dx = -1;
+      }
+      else {
+        this.player.dx = 0;
+      }
+    }
+    else {
+      if (this.pressedKeys.key65) {
+        if (this.pressedKeys.key68) {
+          this.player.dx = 0;
+        }
+        else {
+          this.player.dx = -1;
+        }
+      }
+      else if (this.pressedKeys.key68) {
+        this.player.dx = 1;
+      }
+      else {
+        this.player.dx = 0;
+      }
+    }
+  }
+
   onBlur() {
     this.pressedKeys.key65 = false;
     this.pressedKeys.key68 = false;
@@ -232,7 +267,11 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ball.dy *= -1.03;
     this.ball.dx = (Math.random() * 3) - 1.5;
     if (this.gameMode === Mode.OnlineMultiPlayer) {
-      this.sendGameUpdate('hit', { ball: { x: this.ball.x, y: this.ball.y, dx: this.ball.dx, dy: this.ball.dy } });
+      this.ball.isMoving = false;
+      this.sendGameUpdate('hit', {
+        player: { y: this.player.y }, 
+        ball: { x: this.ball.x, y: this.ball.y, dx: this.ball.dx, dy: this.ball.dy }
+      });
     }
   }
   startGame() {
@@ -267,22 +306,9 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let oldX = this.player.x;
 
-    if (this.usingTouchControls) {
-      if (this.touchTarget - 1 > this.player.x + this.player.width / 2) {
-        this.player.x += 1;
-      }
-      else if (this.touchTarget + 1 < this.player.x + this.player.width / 2) {
-        this.player.x -= 1;
-      }
-    }
-    else {
-      if (this.pressedKeys.key65) {
-        this.player.x -= 1;
-      }
-      if (this.pressedKeys.key68) {
-        this.player.x += 1;
-      }
-    }
+    this.calculateDx();
+    this.player.x += this.player.dx;
+    this.enemy.x += this.enemy.dx;
 
     if (this.player.x < 0) {
       this.player.x = 0;
@@ -290,8 +316,11 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (this.player.x + this.player.width > this.width) {
       this.player.x = this.width - this.player.width;
     }
-    if (this.gameMode === Mode.OnlineMultiPlayer && this.player.x !== oldX) {
+    /*if (this.gameMode === Mode.OnlineMultiPlayer && this.player.x !== oldX) {
       this.sendGameUpdate('move', { x: this.player.x });
+    }*/
+    if (this.gameMode === Mode.OnlineMultiPlayer && this.player.dx !== this.player.oldDx) {
+      this.sendGameUpdate('move', { dx: this.player.dx });
     }
 
     if (this.gameMode === Mode.SinglePlayer) {
@@ -363,11 +392,12 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
           this.score(this.enemy);
         }
         else {
+          this.ball.y = this.height / 2;
           this.sendGameUpdate('miss', undefined);
         }
       }
     }
-
+    this.player.oldDx = this.player.dx;
     this.draw();
   }
   draw() {
@@ -409,13 +439,18 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
         this.endGame();
         break;
       case 'move':
-        this.enemy.x = message.data.x;
+        this.enemy.dx = message.data.dx;
         break;
       case 'hit':
-        this.ball.x = message.data.ball.x;
-        this.ball.y = this.height - message.data.ball.y;
-        this.ball.dx = message.data.ball.dx;
-        this.ball.dy = message.data.ball.dy * -1;
+        if (this.ball.isMoving) {
+          this.ball.dy = message.data.ball.dy * -1;
+          this.ball.x = message.data.ball.x;
+          this.ball.y = this.height - message.data.ball.y;
+          this.ball.dx = message.data.ball.dx;
+        }
+        else {
+          this.ball.isMoving = true;
+        }
         break;
       case 'reset':
         this.countdown = 100;

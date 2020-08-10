@@ -28,8 +28,10 @@ function updatePong(update, user, io) {
             }
             break;
         case 'move':
-        case 'hit':
             io.to(user.opponent.id).emit('game', update);
+            break;
+        case 'hit':
+            io.emit('game', update);
             break;
         case 'miss':
             resetBall(user, user.opponent, io);
