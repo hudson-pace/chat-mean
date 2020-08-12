@@ -2,9 +2,10 @@
 
     <div class="chatbox-header-container">
         <div class="chatbox-header" [class.active]="active">
-            <h3><i class="fa fa-comments"></i>Chat<span [class.new-messages]="newMessages"></span></h3>
+            <h3><fa-icon [icon]='faComments'></fa-icon>Chat<span [class.new-messages]="newMessages"></span></h3>
             <button (click)="toggleActive()">
-                <i class="fa" [class.fa-chevron-up]="!active" [class.fa-chevron-down]="active"></i>
+                <fa-icon *ngIf="active" [icon]='faChevronDown'></fa-icon>
+                <fa-icon *ngIf="!active" [icon]='faChevronUp'></fa-icon>
             </button>
         </div>
     </div>
@@ -20,6 +21,6 @@
     <form class="chatbox-form" (ngSubmit)="send()">
         <textarea [formControl]="message" class="chatbox-input" [style.height.px]="inputHeight" 
             (input)="changeText($event)" (keydown.enter)="onPressEnter($event)"></textarea>
-        <button type="submit"><i class="fa fa-paper-plane"></i></button>
+        <button type="submit"><fa-icon [icon]="faPaperPlane"></fa-icon></button>
     </form>
 </div>

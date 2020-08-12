@@ -4,6 +4,7 @@ import { ChatService } from '../services/chat.service'
 import { AuthenticationService } from '../services/authentication.service'
 import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
+import { faComments, faChevronUp, faChevronDown, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-chat',
@@ -21,6 +22,11 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   oldMessages = [];
   username = '';
   message = new FormControl('');
+  faComments = faComments;
+  faChevronUp = faChevronUp;
+  faChevronDown = faChevronDown;
+  faPaperPlane = faPaperPlane;
+
   constructor(private chatService: ChatService, private authenticationService: AuthenticationService) {
     this.subscription.add(this.authenticationService.getUserSubject().subscribe(x => {
       if (x) {

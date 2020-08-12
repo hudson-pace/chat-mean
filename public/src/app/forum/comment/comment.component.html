@@ -1,4 +1,30 @@
 <div class="container">
-    {{ comment.author.username }}: {{ comment.text }}
-    <app-comment *ngFor="let childComment of childComments" [comment]=childComment></app-comment>
+    <div class="info">
+        <button *ngIf="isCollapsed" (click)="expand()">
+            <fa-icon [icon]="faPlusCircle"></fa-icon>
+        </button>
+        <button *ngIf="!isCollapsed" (click)="collapse()">
+            <fa-icon [icon]="faMinusCircle"></fa-icon>
+        </button>
+        <span class="info-item">{{ comment.votes }} votes</span>
+        <span class="info-item">posted by {{ comment.author }}</span>
+    </div>
+    <div [class.inactive]="isCollapsed" class="body">
+        <div class="content">
+            {{ comment.text }}
+        </div>
+        <div class="options">
+            <button (click)="onClickLikeButton()">
+                <fa-icon [icon]="faThumbsUp" class="like-button" [class.liked]="comment.hasBeenUpvoted"></fa-icon>
+            </button>
+            <button *ngIf="comment.author != '[deleted]'" [routerLink]="['/users', comment.author]">View User Profile</button>
+            <input #commentReplyText type="text">
+            <button (click)="replyToComment(commentReplyText.value)">
+                <fa-icon [icon]="faCommentAlt"></fa-icon>Reply
+            </button>
+        </div>
+        <div *ngIf="comment.children.length > 0" class="child-comment-wrapper">
+            <app-comment *ngFor="let childComment of comment.children" [comment]=childComment></app-comment>
+        </div>
+    </div>
 </div>

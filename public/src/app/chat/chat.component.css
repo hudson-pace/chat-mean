@@ -32,7 +32,7 @@
     display: inline-block;
     font-weight: 400;
 }
-.chatbox-header h3 i {
+.chatbox-header h3 fa-icon {
     margin-right: 12px;
 }
 .chatbox-header h3 .new-messages {

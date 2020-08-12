@@ -15,12 +15,15 @@ const url = require('url');
 //routes
 router.post('/', authorize(), createPostSchema, createPost);
 router.post('/:id', authorize(), createCommentSchema, createComment);
-router.post('/comments/:id', authorize(), createCommentSchema, createCommentReply);
+router.post('/:postId/comments/:commentId', authorize(), createCommentSchema, createCommentReply);
 router.post('/:id/upvote', authorize(), upvotePost);
+router.post('/:id/undo-upvote', authorize(), undoPostUpvote);
 router.post('/comments/:id/upvote', authorize(), upvoteComment);
+router.post('/comments/:id/undo-upvote', authorize(), undoCommentUpvote)
 router.get('/', jwt({secret, algorithms: ['HS256']}), getAllPosts, getAllPostsWithUser);
 router.get('/:id', jwt({secret, algorithms: ['HS256']}), getPostById, getPostByIdWithUser);
 router.get('/comments/:id', jwt({secret, algorithms: ['HS256']}), getChildrenOfComment, getChildrenOfCommentWithUser);
+router.get('/:id/comments', jwt({secret, algorithms: ['HS256']}), getAllComments, getAllCommentsWithUser);
 router.delete('/:id', authorize(), deletePost);
 
 module.exports = router;
@@ -69,7 +72,7 @@ function createComment(req, res, next) {
 function createCommentReply(req, res, next) {
     getById(req.user.id)
         .then(user => {
-            postService.createComment(user, req.body.text, req.params.id)
+            postService.createComment(user, req.body.text, req.params.commentId, req.params.postId)
                 .then(success => res.json(success))
                 .catch(next);
         })
@@ -97,6 +100,17 @@ function getAllPostsWithUser(req, res, next) {
     let queryObject = url.parse(req.url, true).query;
     postService.getAllPosts(req.user.id, queryObject)
         .then(posts => res.json(posts))
+        .catch(next);
+}
+
+function getAllComments(err, req, res, next) {
+    postService.getAllComments(req.params.id, undefined)
+        .then(comments => res.json(comments))
+        .catch(next);
+}
+function getAllCommentsWithUser(req, res, next) {
+    postService.getAllComments(req.params.id, req.user.id)
+        .then(comments => res.json(comments))
         .catch(next);
 }
 
@@ -131,8 +145,18 @@ function upvotePost(req, res, next) {
         .then(success => res.json(success))
         .catch(next);
 }
+function undoPostUpvote(req, res, next) {
+    postService.undoPostUpvote(req.user.id, req.params.id)
+        .then(success => res.json(success))
+        .catch(next);
+}
 function upvoteComment(req, res, next) {
     postService.upvoteComment(req.user.id, req.params.id)
         .then(success => res.json(success)) 
+        .catch(next);
+}
+function undoCommentUpvote(req, res, next) {
+    postService.undoCommentUpvote(req.user.id, req.params.id)
+        .then(success => res.json(success))
         .catch(next);
 }

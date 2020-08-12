@@ -4,7 +4,7 @@ const shortId = require('shortid');
 var postSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
     text: { type: String, required: true },
-    datePosted: { type: Date, required: true, default: Date.now() },
+    datePosted: { type: Date, required: true, default: Date.now },
     tags: [{
         type: String
     }],

@@ -3,6 +3,7 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -54,7 +55,8 @@ var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    FontAwesomeModule,
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },

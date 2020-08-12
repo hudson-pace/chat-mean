@@ -1,8 +1,50 @@
+* {
+    box-sizing: border-box;
+}
 .container {
     text-align: left;
-    border: 1px solid gray;
+    
     width: 80%;
     display: inline-block;
-    margin: 1vh 0;
-    padding: 1vh 2vw;
+    margin: 8px 0;
+    padding: 1vh 0;
+}
+.body {
+    border-left: 2px solid rgba(0, 0, 0, 0.2);
+    padding-left: 16px;
+}
+.body.inactive {
+    display: none;
+}
+.info {
+    margin-bottom: 12px;
+    font-size: .75em;
+}
+.info-item {
+    margin-left: 12px;
+}
+.options {
+    margin-top: 16px;
+    font-size: .8em;
+}
+.like-button.liked {
+    color: blue;
+}
+button {
+    border: none;
+    background: none;
+    padding: 4px 8px;
+}
+button fa-icon {
+    margin-right: 4px;
+}
+button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+button:active {
+    outline: none;
+}
+.child-comment-wrapper {
+    margin-top: 16px;
 }

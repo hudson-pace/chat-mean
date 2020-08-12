@@ -12,7 +12,10 @@ module.exports = {
     getRealPostId,
     getPostsFromUser,
     upvotePost,
-    upvoteComment
+    undoPostUpvote,
+    upvoteComment,
+    undoCommentUpvote,
+    getAllComments,
 }
 
 async function createPost(author, text, tags) {
@@ -24,18 +27,23 @@ async function createPost(author, text, tags) {
     return true;
 }
 
-async function createComment(author, text, parentId) {
+async function createComment(author, text, parentId, postId) {
     var comment = new Comment();
     comment.author = author.id;
     comment.text = text;
     comment.parent = parentId;
-    console.log(comment);
+    if (postId) {
+        comment.post = postId;
+    }
+    else {
+        comment.post = parentId;
+    }
     await comment.save();
-    return true;
+    return { success: true };
 }
 
 async function getChildrenOfComment(commentId, userId) {
-    let comments = await Comment.find({ 'parent': commentId }).populate('author');
+    let comments = await Comment.find({ 'parent': commentId }).sort({ datePosted: -1 }).populate('author');
     let user = await User.findOne({ '_id': userId });
     return comments.map(comment => getCommentDetails(comment, user));
 }
@@ -64,9 +72,15 @@ async function getAllPosts(userId, params) {
     return posts.map(post => getPostDetails(post, user));
 }
 
+async function getAllComments(postId, userId) {
+    const user = await User.findOne({ '_id': userId });
+    const comments = await Comment.find({ 'post': postId }).populate('author');
+    return comments.map(comment => getCommentDetails(comment, user));
+}
+
 async function getPostById(id, userId) {
     var post = await Post.findOne({ 'postId': id }).populate('author');
-    var comments = await Comment.find({ 'parent': post._id }).populate('author');
+    var comments = await Comment.find({ 'post': post._id }).sort({ datePosted: -1 }).populate('author');
     let user;
     if (userId) {
         user = await User.findOne({ '_id': userId });
@@ -96,7 +110,8 @@ async function deletePost(id) {
 
 async function getPostsFromUser(username) {
     var user = await getUserByName(username);
-    return await Post.find({ 'author': user._id });
+    let posts = await Post.find({ 'author': user._id }).populate('author');
+    return posts.map(post => getPostDetails(post, user))
 }
 
 function getPostDetails(post, user) {
@@ -111,13 +126,15 @@ function getPostDetails(post, user) {
     return { author, text, datePosted, votes, tags, postId, _id, hasBeenUpvoted};
 }
 function getCommentDetails(comment, user) {
-    var { author, text, datePosted, votes, _id } = comment;
-    author = author.username;
+    var { author, text, datePosted, votes, _id, parent } = comment;
+    if (author) {
+        author = author.username;
+    }
     let hasBeenUpvoted;
-    if (user) {
+    if (user && comment) {
         hasBeenUpvoted = user.votes.includes(comment._id);
     }
-    return { author, text, datePosted, votes, _id, hasBeenUpvoted };
+    return { author, text, datePosted, votes, parent, _id, hasBeenUpvoted };
 }
 
 async function upvotePost(userId, postId) {
@@ -134,17 +151,48 @@ async function upvotePost(userId, postId) {
         return { success: true };
     }
 }
+async function undoPostUpvote(userId, postId) {
+    let post = await Post.findOne({ 'postId': postId });
+    let user = await User.findOne({ '_id': userId });
+    let index = user.votes.indexOf(post._id)
+    if (index === -1) {
+        return { success: false, error: "post isn't upvoted" };
+    }
+    else {
+        user.votes.splice(index, 1);
+        await user.save();
+        post.votes -= 1;
+        await post.save();
+        return { success: true };
+    }
+}
 async function upvoteComment(userId, commentId) {
     let user = await User.findOne({ '_id': userId });
-    if (user.votes.includes(comment_id)) {
+    if (user.votes.includes(commentId)) {
         return { success: false, error: "already upvoted" };
     }
     else {
-        let comment = await Post.findOne({ '_id': commentId });
+        let comment = await Comment.findOne({ '_id': commentId });
         comment.votes += 1;
         await comment.save();
-        user.votes.push(comment_id);
+        user.votes.push(commentId);
         await user.save();
+        return { success: true };
+    }
+}
+
+async function undoCommentUpvote(userId, commentId) {
+    let comment = await Comment.findOne({ '_id': commentId });
+    let user = await User.findOne({ '_id': userId });
+    let index = user.votes.indexOf(comment._id)
+    if (index === -1) {
+        return { success: false, error: "comment isn't upvoted" };
+    }
+    else {
+        user.votes.splice(index, 1);
+        await user.save();
+        comment.votes -= 1;
+        await comment.save();
         return { success: true };
     }
 }

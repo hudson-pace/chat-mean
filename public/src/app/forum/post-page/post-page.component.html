@@ -11,7 +11,8 @@
             <button type="submit">Post Comment</button>
         </form>
         <div class="comments">
-            <app-comment *ngFor="let comment of post.comments" [comment]="comment"></app-comment>
+            <app-comment *ngFor="let comment of sortedComments" [comment]="comment"
+            [postId]="post._id"></app-comment>
         </div>
     </div>
 </div>
