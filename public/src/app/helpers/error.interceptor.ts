@@ -15,8 +15,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                 this.authenticationService.logout(); // logout if 401 or 403 is received from api
             }
             var error = (err & err.error & err.error.message) || err.statusText;
-            console.error(err);
-            return throwError(error);
+            console.error(err.error);
+            return throwError(err);
         }));
     }
 }

@@ -48,16 +48,9 @@ export class RegisterComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.authenticationService.register(this.f.username.value, this.f.password.value)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.router.navigate([this.returnUrl]);
-        },
-        error: error => {
-          this.error = error;
-          this.loading = false;
-        }
-      });
+    this.authenticationService.register(this.f.username.value, this.f.password.value).subscribe(undefined, err => {
+      this.error = err.error;
+      this.loading = false;
+    })
   }
 }

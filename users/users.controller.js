@@ -1,63 +1,22 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('@hapi/joi');
-var validateRequest = require('../middleware/validate-request');
 var authorize = require('../middleware/authorize');
 var Role = require('../helpers/role');
 var userService = require('./user.service');
 const postService = require('../posts/post.service');
+const jwt = require('express-jwt');
+const { secret } = require('../config');
 
 //routes
-router.post('/authenticate', authenticateSchema, authenticate);
-router.post('/register', registerSchema, register);
-router.post('/refresh-token', refreshToken);
-router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
 router.delete('/user/:username', authorize(), deleteUser);
 router.get('/', authorize(Role.Admin), getAll);
+router.get('/user', authorize(), getUserFromToken);
 router.get('/user/:username', getByName);
-router.get('/user/:username/refresh-tokens', authorize(), getRefreshTokens);
 router.get('/user/:username/posts', getPostsFromUser);
 router.put('/user/:username', authorize(), updateUser);
 
 module.exports = router;
-
-function authenticateSchema(req, res, next) {
-    var schema = Joi.object({
-        username: Joi.string().required(),
-        password: Joi.string().required()
-    });
-    validateRequest(req, next, schema);
-}
-function authenticate(req, res, next) {
-    var {username, password} = req.body;
-    var ipAddress = req.ip;
-    userService.authenticate({username, password, ipAddress})
-        .then(({refreshToken, ...user}) => {
-            setTokenCookie(res, refreshToken);
-            res.json(user);
-        })
-        .catch(next);
-}
-
-function registerSchema(req, res, next) {
-    var schema = Joi.object({
-        user: Joi.object({
-            username: Joi.string().required(),
-            password: Joi.string().required()
-        }).required()
-    });
-    validateRequest(req, next, schema);
-}
-function register(req, res, next) {
-    var userParams = req.body.user;
-    var ipAddress = req.ip;
-    userService.register(userParams, ipAddress)
-        .then(({ refreshToken, ...user }) => {
-            setTokenCookie(res, refreshToken);
-            res.json(user);
-        })
-        .catch(next);
-}
 
 function deleteUser(req, res, next) {
     userService.getUserByName(req.params.username)
@@ -74,39 +33,6 @@ function deleteUser(req, res, next) {
         .catch(next);
 }
 
-function refreshToken(req, res, next) {
-    var token = req.cookies.refreshToken;
-    var ipAddress = req.ip;
-    userService.refreshToken({token, ipAddress})
-        .then(({refreshToken, ...user}) => {
-            setTokenCookie(res, refreshToken);
-            res.json(user);
-        })
-        .catch(next);
-}
-
-function revokeTokenSchema(req, res, next) {
-    var schema = Joi.object({
-        token: Joi.string().empty('')
-    });
-    validateRequest(req, next, schema);
-}
-
-function revokeToken(req, res, next) {
-    var token = req.body.token || req.cookies.refreshToken;
-    var ipAddress = req.ip;
-    if (!token) {
-        return res.status(400).json({message: 'Token is required'});
-    }
-    if (!req.user.ownsToken(token) && req.user.role !== Role.Admin) {
-        return res.status(401).json({message: 'Unauthorized'});
-    }
-
-    userService.revokeToken({token, ipAddress})
-        .then(() => res.json({message: 'Token revoked'}))
-        .catch(next);
-}
-
 function getAll(req, res, next) {
     userService.getAll()
         .then(users => res.json(users))
@@ -117,6 +43,10 @@ function getByName(req, res, next) {
     userService.getUserByName(req.params.username)
         .then(user => user ? res.json(user) : res.sendStatus(404))
         .catch(next);
+}
+
+function getUserFromToken(req, res, next) {
+    return req.user ? res.json(req.user) : res.sendStatus(401);
 }
 
 function getRefreshTokens(req, res, next) {
@@ -138,15 +68,4 @@ function updateUser(req, res, next) {
     userService.updateUser(req.user.id, req.params.username, req.body)
         .then(success => res.json(success))
         .catch(next);
-}
-
-
-// helper functions
-
-function setTokenCookie(res, token) {
-    var cookieOptions = {
-        httpOnly: true,
-        expires: new Date(Date.now() + 7*24*60*60*1000)
-    };
-    res.cookie('refreshToken', token, cookieOptions);
 }

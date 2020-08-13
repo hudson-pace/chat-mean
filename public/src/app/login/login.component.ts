@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
 
 import { AuthenticationService } from '../services/authentication.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -40,19 +40,13 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-
     if (this.loginForm.invalid) {
       return;
     }
     this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
-      .pipe(first())
-      .subscribe({
-        error: error => {
-          console.log(error);
-          this.error = error;
-          this.loading = false;
-        }
-      });
+    this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe(undefined, err => {
+      this.error = err.error;
+      this.loading = false;
+    });
   }
 }

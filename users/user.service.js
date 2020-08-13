@@ -9,10 +9,8 @@ var { User } = require('../helpers/db');
 var role = require('../helpers/role');
 
 module.exports = {
-    authenticate,
     register,
     deleteUser,
-    refreshToken,
     revokeToken,
     getAll,
     getById,
@@ -21,44 +19,13 @@ module.exports = {
     updateUser,
 };
 
-async function authenticate({ username, password, ipAddress}) {
-    var user = await db.User.findOne({username});
-    if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
-        throw 'username or password is incorrect';
-    }
-
-    // generate jwt and refresh tokens on successful authentication
-    var jwtToken = generateJwtToken(user);
-    var refreshToken = generateRefreshToken(user, ipAddress);
-
-    await refreshToken.save();
-
-    return {
-        ...basicDetails(user),
-        jwtToken,
-        refreshToken: refreshToken.token
-    };
-}
-
-async function register(userParams, ipAddress) {
-    if (await User.findOne({ username: userParams.username })) {
-        throw 'username is taken';
-    }
-    var user = new User();
+async function register(userParams) {
+    const user = new User();
     user.username = userParams.username;
-    user.passwordHash = bcrypt.hashSync(userParams.password, 10);
     user.role = role.User;
     await user.save();
 
-    var jwtToken = generateJwtToken(user);
-    var refreshToken = generateRefreshToken(user, ipAddress);
-    await refreshToken.save();
-
-    return {
-        ...basicDetails(user),
-        jwtToken,
-        refreshToken: refreshToken.token
-    };
+    return user;
 }
 
 async function deleteUser(id) {
@@ -71,26 +38,6 @@ async function deleteUser(id) {
         success: {
             success: success
         }
-    }
-}
-
-async function refreshToken({ token, ipAddress}) {
-    var refreshToken = await getRefreshToken(token);
-    var {user} = refreshToken;
-
-    var newRefreshToken = generateRefreshToken(user, ipAddress);
-    refreshToken.revoked = Date.now();
-    refreshToken.revokedByIp = ipAddress;
-    refreshToken.replacedByToken = newRefreshToken.token;
-    await refreshToken.save();
-    await newRefreshToken.save();
-
-    var jwtToken = generateJwtToken(user);
-
-    return {
-        ...basicDetails(user),
-        jwtToken,
-        refreshToken: newRefreshToken.token
     }
 }
 

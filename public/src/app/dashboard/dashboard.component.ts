@@ -25,7 +25,9 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authenticationService.getAllUsers().subscribe(users => this.allUsers = users);
+    if (this.user.role === 'Admin') {
+      this.authenticationService.getAllUsers().subscribe(users => this.allUsers = users);
+    }
   }
 
   onSubmit(): void {
