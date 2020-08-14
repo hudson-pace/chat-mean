@@ -12,6 +12,7 @@
     "@hapi/joi": "^17.1.1",
     "angular": "^1.8.0",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -22,5 +23,10 @@
     "passport-local": "^1.0.0",
     "shortid": "^2.2.15",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }

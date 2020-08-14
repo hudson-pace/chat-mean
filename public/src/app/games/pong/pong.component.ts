@@ -98,6 +98,7 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.gameMode === Mode.OnlineMultiPlayer) {
       this.sendGameUpdate('leave', undefined);
+      this.endGame();
     }
   }
 
@@ -269,7 +270,6 @@ export class PongComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.gameMode === Mode.OnlineMultiPlayer) {
       this.ball.isMoving = false;
       this.sendGameUpdate('hit', {
-        player: { y: this.player.y }, 
         ball: { x: this.ball.x, y: this.ball.y, dx: this.ball.dx, dy: this.ball.dy }
       });
     }
