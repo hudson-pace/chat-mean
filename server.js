@@ -17,7 +17,6 @@ const updateMoveAround = require('./games/move-around');
 const updatePong = require('./games/pong');
 const config = require('./config');
 const usersController = require('./users/users.controller');
-const postsController = require('./posts/posts.controller');
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -42,7 +41,6 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 app.use(redirectToHttps);
 app.use(express.static(path.join(__dirname, 'public', 'dist', 'ChatApp')));
 app.use('/api/users', usersController);
-app.use('/api/posts', postsController);
 app.use(errorHandler);
 
 app.get('*', (req, res) => {

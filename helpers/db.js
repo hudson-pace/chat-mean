@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const User = require('../users/user.model');
-const Post = require('../posts/post.model');
-const Comment = require('../posts/comment.model');
 const RefreshToken = require('../users/refresh-token.model');
 const config = require('../config');
 
@@ -20,8 +18,6 @@ function isValidId(id) {
 
 module.exports = {
   User,
-  Post,
-  Comment,
   RefreshToken,
   isValidId,
 };

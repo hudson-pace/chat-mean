@@ -2,7 +2,6 @@ const express = require('express');
 const authorize = require('../middleware/authorize');
 const Role = require('../helpers/role');
 const userService = require('./user.service');
-const postService = require('../posts/post.service');
 
 const router = express.Router();
 
@@ -48,12 +47,6 @@ function getRefreshTokens(req, res, next) {
     .catch(next);
 }
 
-function getPostsFromUser(req, res, next) {
-  postService.getPostsFromUser(req.params.username)
-    .then((posts) => res.json(posts))
-    .catch(next);
-}
-
 function updateUser(req, res, next) {
   userService.updateUser(req.user.id, req.params.username, req.body)
     .then((success) => res.json(success))
@@ -64,5 +57,4 @@ router.delete('/user/:username', authorize(), deleteUser);
 router.get('/', authorize(Role.Admin), getAll);
 router.get('/user', authorize(), getUserFromToken);
 router.get('/user/:username', getByName);
-router.get('/user/:username/posts', getPostsFromUser);
 router.put('/user/:username', authorize(), updateUser);
