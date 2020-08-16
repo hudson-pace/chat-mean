@@ -1,5 +1,0 @@
-<form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-    <label>text: <input type="text" formControlName="text"></label>
-    <label>tags: <input type="text" formControlName="tags"></label>
-    <button type="submit" [disabled]="!postForm.valid">Create Post</button>
-</form>

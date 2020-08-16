@@ -1,8 +1,0 @@
-<div class="container">
-    <div class="post">
-        <label>Search by tags: <input #tagSearchInput type="text"></label>
-        <button (click)="searchByTags(tagSearchInput.value)">Search</button>
-    </div>
-    <div class="post create-post"><a routerLink="/forum/create-post"><button>Create Post</button></a></div>
-    <app-post *ngFor="let post of posts" [post]="post"></app-post>
-</div>
