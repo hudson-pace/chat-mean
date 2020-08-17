@@ -1,7 +1,7 @@
 {
-  "name": "mean-chat-server",
+  "name": "games-server",
   "version": "1.0.0",
-  "description": "A basic chat server made with MEAN",
+  "description": "A server to provide functionality to the games site.",
   "main": "server.js",
   "scripts": {
     "test": "test"

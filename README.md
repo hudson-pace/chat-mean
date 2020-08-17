@@ -1,2 +1,2 @@
-# chat-mean
-A basic site made with mean. Create an account, chat, and play some simple games. Check it out at hudsonotron.com.
+# games
+An angular site containing a few games, with a nodejs/express backend. Includes singleplayer and online multiplayer. There are also accounts, and a chat function. Check it out at https://hudsonotron.com/games.

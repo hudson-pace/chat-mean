@@ -10,7 +10,7 @@ import { User } from './models/user';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'ChatApp';
+  title = 'Games';
   user: User;
   isChatActive: boolean = false;
   isLoginActive: boolean = false;
