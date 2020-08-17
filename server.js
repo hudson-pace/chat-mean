@@ -39,13 +39,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
 app.use(redirectToHttps);
-app.use(express.static(path.join(__dirname, 'public', 'dist', 'ChatApp')));
-app.use('/api/users', usersController);
+app.use('/users', usersController);
 app.use(errorHandler);
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'dist', 'ChatApp', 'index.html'));
-});
 
 let nameCounter = 0;
 let idCounter = 0;
@@ -227,11 +222,11 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(3000, () => {
-  console.log('listening to http on port 3000');
+httpServer.listen(3002, () => {
+  console.log('listening to http on port 3002');
 });
 if (config.environment === 'production') {
-  httpsServer.listen(3001, () => {
-    console.log('listening to https on port 3001...');
+  httpsServer.listen(3003, () => {
+    console.log('listening to https on port 3003...');
   });
 }

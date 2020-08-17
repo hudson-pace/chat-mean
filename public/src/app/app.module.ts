@@ -23,7 +23,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PongComponent } from './games/pong/pong.component';
 import { GameMenuComponent } from './games/game-menu/game-menu.component';
 
-var config: SocketIoConfig = { url: environment.socketUrl, options: {} };
+var config: SocketIoConfig = { url: environment.socketUrl, options: { path: environment.socketPath } };
 
 @NgModule({
   declarations: [
