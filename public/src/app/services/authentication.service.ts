@@ -72,11 +72,11 @@ export class AuthenticationService {
                             this.userSubject.next(user);
                             this.startRefreshTokenTimer();
                         }, err => {
-                            console.log('oh, shift! ' + err.error);
+                            this.userSubject.next(null);
                         });
                     }
             }, err => {
-                console.log('oh no. ' + err.error);
+                this.userSubject.next(null);
             });
     }
 

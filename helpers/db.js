@@ -9,7 +9,7 @@ const connectionOptions = {
   useUnifiedTopology: true,
   useFindAndModify: false,
 };
-mongoose.connect(config.url, connectionOptions);
+mongoose.connect(config.dbUri, connectionOptions);
 mongoose.Promise = global.Promise;
 
 function isValidId(id) {

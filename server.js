@@ -2,15 +2,12 @@ const express = require('express');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const socketIo = require('socket.io');
 const errorHandler = require('./middleware/error-handler');
-const redirectToHttps = require('./middleware/redirect-to-https');
-const { secret } = require('./config');
 const db = require('./helpers/db');
 const updateBattleship = require('./games/battleship');
 const updateMoveAround = require('./games/move-around');
@@ -19,26 +16,25 @@ const config = require('./config');
 const usersController = require('./users/users.controller');
 
 const app = express();
-const httpServer = http.createServer(app);
-let httpsServer;
-let io;
+
+let server;
 
 if (config.environment === 'production') {
   const options = {
     key: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/hudsonotron.com/fullchain.pem'),
   };
-  httpsServer = https.createServer(options, app);
-  io = socketIo(httpsServer);
+  server = https.createServer(options, app);
 } else {
-  io = socketIo(httpServer);
+  server = http.createServer(app);
 }
+
+const io = socketIo(server);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
-app.use(redirectToHttps);
 app.use('/users', usersController);
 app.use(errorHandler);
 
@@ -108,7 +104,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('authenticate', (token) => {
-    jwt.verify(token, secret, async (err, decodedToken) => {
+    jwt.verify(token, config.secret, async (err, decodedToken) => {
       if (err) {
         console.log('auth error');
       }
@@ -222,11 +218,4 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(3002, () => {
-  console.log('listening to http on port 3002');
-});
-if (config.environment === 'production') {
-  httpsServer.listen(3003, () => {
-    console.log('listening to https on port 3003...');
-  });
-}
+server.listen(config.port, () => console.log(`listening on port ${config.port}`));
